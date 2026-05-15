@@ -1,0 +1,12 @@
+export org.ninng.businesssvc.model.SysTenant
+    -> package org.ninng.businesssvc.model.dto
+
+import com.fasterxml.jackson.annotation.JsonFormat
+
+input TenantCreateInput {
+    name
+}
+
+specification TenantSpecification {
+    #allScalars
+}

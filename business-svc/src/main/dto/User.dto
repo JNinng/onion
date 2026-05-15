@@ -1,0 +1,46 @@
+export org.ninng.businesssvc.model.SysUser
+    -> package org.ninng.businesssvc.model.dto
+
+UserView {
+    #allScalars
+}
+
+UserSelectionView {
+    id as value
+
+    name as label
+}
+
+specification UserSpecification {
+    name
+
+    like/^(nickname)
+}
+
+input UserUpdateInput {
+    id
+
+    dynamic tenantId
+
+    dynamic name?
+
+    dynamic nickname?
+
+    dynamic roles? {
+        id
+    }
+}
+
+input LoginInput {
+    #allScalars(this)
+
+    -id
+
+    -nickname
+}
+
+input RegisterInput {
+    #allScalars(this)
+
+    -id
+}

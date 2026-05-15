@@ -1,0 +1,16 @@
+export org.ninng.businesssvc.model.SysDept
+    -> package org.ninng.businesssvc.model.dto
+
+import com.fasterxml.jackson.annotation.JsonFormat
+
+input DeptCreateInput {
+    name
+
+    fixed adminUserId
+
+    parentId
+}
+
+specification DeptSpecification {
+    #allScalars
+}

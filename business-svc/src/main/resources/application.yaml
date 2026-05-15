@@ -1,0 +1,59 @@
+server:
+  port: 8080
+  servlet:
+    jsp:
+      registered: false
+
+spring:
+  profiles:
+    default: dev
+  application:
+    name: business-svc
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/onion?currentSchema=public&sslmode=disable
+    username: postgresql
+    password: root
+    hikari:
+      minimum-idle: 2
+      connection-test-query: SELECT 1
+  data:
+    redis:
+      host: localhost
+      lettuce:
+        pool:
+          min-idle: 1
+  mvc:
+    servlet:
+      load-on-startup: 1
+  webservices:
+    servlet:
+      load-on-startup: 1
+
+jimmer:
+  client:
+    openapi:
+      path: /openapi.yml
+      ui-path: /openapi.html
+      properties:
+        info:
+          title: My Web Service
+          description: |
+            Restore the DTO explosion that was 
+            eliminated by server-side developers
+          version: 1.0
+    ts:
+      path: /data/ts.zip
+  show-sql: true
+  pretty-sql: true
+
+jwt:
+  secret: YourSuperSecretKeyForJwtSigningMustBeLongEnough1234567890
+  expiration: 30d
+
+security:
+  default-algorithm: NONE
+  aes-secret-key: "vuwxCpFqAnFLDe/Nm/wHoff3QoUk/cAdVF1oNUVrrHA="
+  aes-hmac-key: "adtWxA5+QXAHLDxWjPqZRcI9WNh7tyiZ5oVXZ/qzWAw="
+  response-whitelist: msg,code
+

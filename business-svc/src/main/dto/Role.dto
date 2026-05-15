@@ -1,0 +1,12 @@
+export org.ninng.businesssvc.model.SysRole
+    -> package org.ninng.businesssvc.model.dto
+
+input RoleCreateInput {
+    name
+
+    parentId
+
+    scope
+
+    fixed code
+}

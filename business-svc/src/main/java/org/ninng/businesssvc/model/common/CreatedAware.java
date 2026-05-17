@@ -10,7 +10,6 @@ import org.ninng.businesssvc.constant.DateConstant;
 import org.ninng.businesssvc.model.SysUser;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @MappedSuperclass
 public interface CreatedAware {
@@ -23,7 +22,7 @@ public interface CreatedAware {
 
     @IdView(value = "creator")
     @Nullable
-    UUID createdBy();
+    Long createdBy();
 
     /**
      * 创建人

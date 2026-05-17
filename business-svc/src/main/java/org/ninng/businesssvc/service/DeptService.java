@@ -12,7 +12,6 @@ import org.ninng.businesssvc.repository.DeptRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class DeptService {
@@ -34,7 +33,7 @@ public class DeptService {
         return deptRepository.select(fetcher, pageReq, deptSpecification);
     }
 
-    public Boolean deleteById(UUID id) {
+    public Boolean deleteById(Long id) {
         deptRepository.verifyPermissions(UserContextHolder.getUserId(), List.of());
         return deptRepository.delete(id);
     }

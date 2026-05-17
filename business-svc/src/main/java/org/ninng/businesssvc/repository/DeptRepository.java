@@ -9,10 +9,8 @@ import org.ninng.businesssvc.model.SysDept;
 import org.ninng.businesssvc.model.SysDeptTable;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public class DeptRepository extends CommonRepository<SysDept, UUID> {
+public class DeptRepository extends CommonRepository<SysDept, Long> {
 
     private static final SysDeptTable table = SysDeptTable.$;
 

@@ -13,8 +13,6 @@ import org.ninng.businesssvc.service.DeptService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/v1")
 public class DeptController {
@@ -43,7 +41,7 @@ public class DeptController {
     }
 
     @PostMapping(PREFIX + "/{id}:delete")
-    public R<Boolean> delete(@PathVariable UUID id) {
+    public R<Boolean> delete(@PathVariable Long id) {
         return R.ok(deptService.deleteById(id));
     }
 }

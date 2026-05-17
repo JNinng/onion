@@ -8,7 +8,6 @@ import org.ninng.businesssvc.constant.DateConstant;
 import org.ninng.businesssvc.model.SysUser;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @MappedSuperclass
 public interface UpdatedAware {
@@ -21,7 +20,7 @@ public interface UpdatedAware {
 
     @IdView(value = "updater")
     @Nullable
-    UUID updatedBy();
+    Long updatedBy();
 
     /**
      * 更新人

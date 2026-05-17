@@ -2,14 +2,12 @@ package org.ninng.businesssvc.model;
 
 import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.*;
-import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
 import org.ninng.businesssvc.model.common.CreatedAware;
 import org.ninng.businesssvc.model.common.StatusAware;
 import org.ninng.businesssvc.model.common.TenantAware;
 import org.ninng.businesssvc.model.common.UpdatedAware;
 import org.ninng.businesssvc.model.t.Scope;
-
-import java.util.UUID;
+import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 
 @Entity
 public interface SysRole extends CreatedAware, UpdatedAware, StatusAware, TenantAware {
@@ -18,15 +16,15 @@ public interface SysRole extends CreatedAware, UpdatedAware, StatusAware, Tenant
      * ID
      */
     @Id
-    @GeneratedValue(generatorType = UUIDIdGenerator.class)
-    UUID id();
+    @GeneratedValue(generatorType = SnowflakeIdGenerator.class)
+    long id();
 
     /**
      * 父角色 ID
      */
     @Nullable
     @IdView
-    UUID parentId();
+    Long parentId();
 
     @Nullable
     @ManyToOne

@@ -22,7 +22,6 @@ import org.ninng.businesssvc.model.common.UpdatedAwareProps;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class CommonRepository<E, ID> extends AbstractJavaRepository<E, ID> {
 
@@ -100,7 +99,7 @@ public abstract class CommonRepository<E, ID> extends AbstractJavaRepository<E, 
      *
      * @throws PermissionsException 数据权限异常
      */
-    public void verifyPermissions(UUID userId, List<ID> dataIds) throws PermissionsException {
+    public void verifyPermissions(Long userId, List<ID> dataIds) throws PermissionsException {
         System.out.println(userId);
     }
 

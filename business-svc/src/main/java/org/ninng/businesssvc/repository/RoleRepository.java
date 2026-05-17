@@ -8,10 +8,8 @@ import org.ninng.businesssvc.model.SysRoleFetcher;
 import org.ninng.businesssvc.model.SysRoleTable;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public class RoleRepository extends CommonRepository<SysRole, UUID> {
+public class RoleRepository extends CommonRepository<SysRole, Long> {
 
     private static final SysRoleTable table = SysRoleTable.$;
 

@@ -1,6 +1,7 @@
 package org.ninng.businesssvc.config;
 
 import jakarta.annotation.PostConstruct;
+import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 import org.ninng.businesssvc.utils.TenantIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -25,5 +26,6 @@ public class TenantIdConfig {
         }
         long mask = Long.parseUnsignedLong(hex, 16);
         TenantIdGenerator.init(machineId, mask);
+        SnowflakeIdGenerator.init(machineId);
     }
 }

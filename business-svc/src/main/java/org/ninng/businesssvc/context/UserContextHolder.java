@@ -4,8 +4,6 @@ import com.alibaba.ttl.TransmittableThreadLocal;
 import jakarta.annotation.Nullable;
 import org.ninng.businesssvc.model.SysUser;
 
-import java.util.UUID;
-
 /**
  * 登录用户上下文
  */
@@ -38,7 +36,7 @@ public class UserContextHolder {
     }
 
     @Nullable
-    public static UUID getUserId() {
+    public static Long getUserId() {
         SysUser sysUser = user.get();
         if (sysUser == null) {
             return null;

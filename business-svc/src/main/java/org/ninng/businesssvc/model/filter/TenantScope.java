@@ -4,9 +4,7 @@ import org.babyfish.jimmer.sql.filter.AssociationIntegrityAssuranceFilter;
 import org.babyfish.jimmer.sql.filter.FilterArgs;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.model.common.TenantAwareProps;
-import org.springframework.stereotype.Component;
 
-@Component
 public class TenantScope implements AssociationIntegrityAssuranceFilter<TenantAwareProps> {
 
     @Override

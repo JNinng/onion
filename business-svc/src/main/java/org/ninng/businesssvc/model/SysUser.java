@@ -2,24 +2,20 @@ package org.ninng.businesssvc.model;
 
 import jakarta.validation.constraints.NotNull;
 import org.babyfish.jimmer.sql.*;
-import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
-import org.ninng.businesssvc.model.common.CreatedAware;
-import org.ninng.businesssvc.model.common.StatusAware;
-import org.ninng.businesssvc.model.common.TenantAware;
-import org.ninng.businesssvc.model.common.UpdatedAware;
+import org.ninng.businesssvc.model.common.*;
+import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-public interface SysUser extends CreatedAware, UpdatedAware, StatusAware, TenantAware {
+public interface SysUser extends CreatedAware, UpdatedAware, StatusAware, OwnerAware, TenantAware {
 
     /**
      * ID
      */
     @Id
-    @GeneratedValue(generatorType = UUIDIdGenerator.class)
-    UUID id();
+    @GeneratedValue(generatorType = SnowflakeIdGenerator.class)
+    long id();
 
     /**
      * 用户名

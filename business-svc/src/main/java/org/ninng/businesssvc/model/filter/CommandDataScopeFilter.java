@@ -10,7 +10,6 @@ import org.ninng.businesssvc.model.common.OwnerAwareProps;
 import org.ninng.businesssvc.model.common.TenantAwareProps;
 
 import java.util.List;
-import java.util.UUID;
 
 public class CommandDataScopeFilter<E, T extends Table<E>> implements UserOptimisticLock<E, T> {
 
@@ -21,7 +20,7 @@ public class CommandDataScopeFilter<E, T extends Table<E>> implements UserOptimi
 
     private static <E, T extends Table<E>> @Nullable Predicate ownerFilter(T table) {
         return table instanceof OwnerAwareProps ownerAwareProps ? ownerAwareProps.ownerUserId()
-                .in(List.of(UUID.randomUUID())) : null;
+                .in(List.of(UserContextHolder.getUserId())) : null;
     }
 
     @Override

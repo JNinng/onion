@@ -13,8 +13,6 @@ import org.ninng.businesssvc.repository.TenantRepository;
 import org.ninng.businesssvc.utils.RandomStringIdGenerator;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 public class TenantService {
 
@@ -35,7 +33,7 @@ public class TenantService {
         return tenantRepository.findByCode(fetcher, tenantName);
     }
 
-    public Boolean deleteById(UUID id) {
+    public Boolean deleteById(String id) {
         return tenantRepository.delete(id);
     }
 

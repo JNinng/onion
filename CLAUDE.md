@@ -36,6 +36,7 @@ model/         → Jimmer ORM entities (@Entity interfaces)
   common/      → Mixin interfaces: CreatedAware, UpdatedAware, StatusAware, TenantAware, OwnerAware
 model/filter/  → Jimmer draft interceptors, data-scope filters, tenant filters
 security/      → Request encryption/decryption (AES, RSA, HMAC), algorithm strategy pattern
+utils/         → Custom ID generators (TenantIdGenerator: 16-char Base32 IDs, Jimmer UserIdGenerator)
 component/     → JWT utils, i18n, auth filter, locale resolver
 config/        → Spring @Configuration: Security, Jimmer cache, Jackson, Redis cache, i18n
 filter/        → OncePerRequestFilter chain (trace ID, user context, security context, etc.)
@@ -49,7 +50,7 @@ entity/        → POJO DTOs for request/response (R<T>, LoginResp, PageReq, etc
 
 **1. Unified Response `R<T>`** — All controllers return `R<T>` with `code`, `msg`, `data`, and optional `algorithm` fields. Wraps success/fail/err.
 
-**2. Jimmer ORM** — Entities are Java interfaces with `@Entity`. Keys: `@Id` with `UUIDIdGenerator`, `@ManyToMany` with `@JoinTable`, mixin interfaces (`CreatedAware`, `UpdatedAware`, `TenantAware`, etc.). Jimmer DTO language (`.dto` files) generates views, inputs, and specifications.
+**2. Jimmer ORM** — Entities are Java interfaces with `@Entity`. Keys: `@Id` with `UserIdGenerator` implementations (`TenantIdGenerator` for 16-char Base32 strings, `UUIDIdGenerator` for UUIDs), `@ManyToMany` with `@JoinTable`, mixin interfaces (`CreatedAware`, `UpdatedAware`, `TenantAware`, etc.). Jimmer DTO language (`.dto` files) generates views, inputs, and specifications.
 
 **3. Jimmer Fetchers** — Field-level fetch control via `SysUserFetcher.$.allScalarFields().password(false).roles(...)`. Combined with `@FetchBy` on controller method return types for runtime fetch-plan enforcement.
 
@@ -63,11 +64,13 @@ entity/        → POJO DTOs for request/response (R<T>, LoginResp, PageReq, etc
 
 **8. i18n** — `I18nUtil` wraps Spring `MessageSource`. Locale resolved via `Accept-Language` header (`RequestLocaleResolver`). Properties files at `resources/i18n/messages*.properties`.
 
+**9. Custom ID Generation** — `TenantIdGenerator` implements Jimmer `UserIdGenerator<String>` to produce 16-character fixed-length IDs using Base32 encoding. The 80-bit payload (40-bit timestamp, 10-bit machine ID, 12-bit sequence, 18-bit random) is obfuscated via a **4-round Feistel permutation** (bijective, 1:1). Round keys are derived from the `time-mask` seed using a split-mix sequence. The Feistel network replaces simple XOR masking — it provides full bit-diffusion across both halves while remaining invertible via `decodeTenantId()`. Alphabet: `23456789ABCDEFGHJKLMNPQRSTUVWXYZ` (excludes 0/O/1/I to avoid visual ambiguity). Initialized at startup via `TenantIdConfig` (`@Configuration`) which reads `security.tenant-id.machine-id` and `security.tenant-id.time-mask` from `application.yaml`. Constants `C.TENANT_ID_LENGTH` (16) and `C.TENANT_ID_ALPHABET` define the length and character set.
+
 ### Domain Model
 
 - **SysUser** — id (UUID), name, nickname, password, roles (M2M via user_role_mapping)
 - **SysRole** — RBAC roles
-- **SysTenant** — Multi-tenant support with `code` and `name`
+- **SysTenant** — Multi-tenant support with `id` (String, 16-char Base32 via TenantIdGenerator), `code` and `name`
 - **SysDept** — Department hierarchy
 - All entities mix in `CreatedAware`, `UpdatedAware`, `StatusAware`, `TenantAware`
 
@@ -77,6 +80,7 @@ entity/        → POJO DTOs for request/response (R<T>, LoginResp, PageReq, etc
 - **Spring Security** — Stateless session, CORS wide-open, public endpoints: `/auth/login`, `/auth/register`, `/auth/info`, `/auth/secret`, `/openapi*`, `/__test`
 - **Password** — `DelegatingPasswordEncoder` with BCrypt (strength 12) and SCrypt (default)
 - **Algorithm negotiation** — Client sends `Accept-Algorithm` header; default from config (`security.default-algorithm`)
+- **Tenant ID generator config** — `security.tenant-id.machine-id` (int, machine ID, 0-1023) and `security.tenant-id.time-mask` (hex string, seed for Feistel round key derivation); consumed by `TenantIdConfig` at startup
 
 ### Dev Infrastructure
 

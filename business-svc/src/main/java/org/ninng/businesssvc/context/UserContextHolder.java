@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public class UserContextHolder {
 
-    private static final TransmittableThreadLocal<UUID> tenantId = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<String> tenantId = new TransmittableThreadLocal<>();
     private static final TransmittableThreadLocal<SysUser> user = new TransmittableThreadLocal<>();
 
     public static void removes() {
@@ -20,11 +20,11 @@ public class UserContextHolder {
     }
 
     @Nullable
-    public static UUID getTenantId() {
+    public static String getTenantId() {
         return tenantId.get();
     }
 
-    public static void setTenantId(@Nullable UUID tenantId) {
+    public static void setTenantId(@Nullable String tenantId) {
         UserContextHolder.tenantId.set(tenantId);
     }
 

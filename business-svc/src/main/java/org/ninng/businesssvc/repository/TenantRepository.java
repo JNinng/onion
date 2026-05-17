@@ -15,10 +15,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
-public class TenantRepository extends CommonRepository<SysTenant, UUID> {
+public class TenantRepository extends CommonRepository<SysTenant, String> {
 
     private static final SysTenantTable table = SysTenantTable.$;
 
@@ -61,7 +60,7 @@ public class TenantRepository extends CommonRepository<SysTenant, UUID> {
      * </pre>
      */
     @Override
-    public Boolean delete(UUID id) {
+    public Boolean delete(String id) {
         return withUpdated().where(table.id()
                         .eq(id))
                 .set(table.deletedAt(), LocalDateTime.now())

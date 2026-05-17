@@ -13,7 +13,7 @@ CREATE TABLE public.basic
     updated_by uuid         NOT NULL,                                           -- 更新人
     updated_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新时间
     deleted_at timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
-    tenant_id  uuid         NOT NULL,                                           -- 租户 ID
+    tenant_id  varchar(16)  NOT NULL,                                           -- 租户 ID
     CONSTRAINT sys_basic_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE public.basic IS '基础字段示例表';
@@ -45,7 +45,7 @@ CREATE TABLE public.sys_dept
     updated_by    uuid         NOT NULL,                                           -- 更新人
     updated_at    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新人
     deleted_at    timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
-    tenant_id     uuid         NOT NULL,                                           -- 租户 ID
+    tenant_id     varchar(16)  NOT NULL,                                           -- 租户 ID
     parent_id     uuid         NULL,                                               -- 父级部门 ID
     "name"        varchar(256) NOT NULL,                                           -- 部门名
     admin_user_id uuid         NOT NULL,                                           -- 部门管理员用户
@@ -83,7 +83,7 @@ CREATE TABLE public.sys_role
     updated_by uuid         NOT NULL,                                           -- 更新人
     updated_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新时间
     deleted_at timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
-    tenant_id  uuid         NOT NULL,                                           -- 租户 ID
+    tenant_id  varchar(16)  NOT NULL,                                           -- 租户 ID
     parent_id  uuid         NULL,                                               -- 父角色 ID
     "name"     varchar(256) NOT NULL,                                           -- 角色名
     "scope"    int2         NOT NULL,                                           -- 数据范围规则：0-个人 1-本部门 2-部门及子部门 3-指定人 4-全租户 5-自定义
@@ -118,14 +118,14 @@ COMMENT ON COLUMN public.sys_role.code IS '权限编码';
 
 CREATE TABLE public.sys_tenant
 (
-    id         uuid         NOT NULL,                                           -- 租户 ID
+    id         varchar(16)  NOT NULL,                                           -- 租户 ID
     status     int2         NOT NULL DEFAULT 1,                                 -- 数据状态，0：禁用、1：启用
     created_by uuid         NOT NULL,                                           -- 创建人
     created_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 创建时间
     updated_by uuid         NOT NULL,                                           -- 更新人
     updated_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新时间
     deleted_at timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
-    tenant_id  uuid         NOT NULL,                                           -- 租户 ID
+    tenant_id  varchar(16)  NOT NULL,                                           -- 租户 ID
     code       varchar(32)  NOT NULL,                                           -- 租户编码
     "name"     varchar(256) NOT NULL,                                           -- 租户名
     CONSTRAINT sys_tenant_name_un UNIQUE (name),
@@ -163,7 +163,7 @@ CREATE TABLE public.sys_user
     updated_by    uuid         NOT NULL,                                           -- 更新人
     updated_at    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新时间
     deleted_at    timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
-    tenant_id     uuid         NULL,                                               -- 租户 ID
+    tenant_id     varchar(16)  NULL,                                               -- 租户 ID
     owner_user_id uuid         NULL,                                               -- 归属用户 ID
     owner_dept_id uuid         NULL,                                               -- 归属部门 ID
     "name"        varchar(256) NOT NULL,                                           -- 用户名

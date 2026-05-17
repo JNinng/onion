@@ -56,4 +56,7 @@ security:
   aes-secret-key: "vuwxCpFqAnFLDe/Nm/wHoff3QoUk/cAdVF1oNUVrrHA="
   aes-hmac-key: "adtWxA5+QXAHLDxWjPqZRcI9WNh7tyiZ5oVXZ/qzWAw="
   response-whitelist: msg,code
+  tenant-id:
+    machine-id: 1
+    time-mask: "0xDEADBEEFCAFEBABE"
 

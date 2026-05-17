@@ -42,3 +42,5 @@ build/
 /.idea/CoolRequestCommonStatePersistent.xml
 /.idea/CoolRequestCookiePersistent.xml
 /.idea/CoolRequestEnvironmentPersistentComponent.xml
+/.claude/settings.local.json
+/.claude/agents/claude-md-updater.md

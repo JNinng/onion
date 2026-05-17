@@ -26,5 +26,9 @@ public class C {
             '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v',
             'w', 'x', 'y', 'z'};
     public final static int TRACE_ID_LENGTH = 16;
-    public final static int TENANT_ID_LENGTH = 32;
+    public final static int TENANT_ID_LENGTH = 16;
+    /**
+     * 租户ID 字符集（排除 0/O/1/I 等相似字符）
+     */
+    public final static char[] TENANT_ID_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ".toCharArray();
 }

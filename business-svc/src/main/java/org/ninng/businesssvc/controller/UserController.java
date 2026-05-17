@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping(PREFIX + ":test")
-    public R<?> test(@RequestBody UserUpdateInput input) {
+    public R<Void> test(@RequestBody UserUpdateInput input) {
         System.out.println(input);
         return R.ok(null);
     }

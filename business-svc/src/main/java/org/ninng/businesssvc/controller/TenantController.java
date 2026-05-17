@@ -12,8 +12,6 @@ import org.ninng.businesssvc.model.dto.TenantSpecification;
 import org.ninng.businesssvc.service.TenantService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/v1")
 public class TenantController {
@@ -48,7 +46,7 @@ public class TenantController {
     }
 
     @PostMapping(PREFIX + "/{id}:delete")
-    public R<Boolean> delete(@PathVariable UUID id) {
+    public R<Boolean> delete(@PathVariable String id) {
         return R.ok(tenantService.deleteById(id));
     }
 }

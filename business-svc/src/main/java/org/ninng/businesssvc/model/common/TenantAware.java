@@ -6,8 +6,6 @@ import org.babyfish.jimmer.sql.ManyToOne;
 import org.babyfish.jimmer.sql.MappedSuperclass;
 import org.ninng.businesssvc.model.SysTenant;
 
-import java.util.UUID;
-
 @MappedSuperclass
 public interface TenantAware {
 
@@ -16,7 +14,7 @@ public interface TenantAware {
      */
     @IdView
     @Nullable
-    UUID tenantId();
+    String tenantId();
 
     @ManyToOne
     @Nullable

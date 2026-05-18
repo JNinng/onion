@@ -4,9 +4,13 @@ export org.ninng.businesssvc.model.SysRole
 input RoleCreateInput {
     name
 
-    parentId
+    code
 
-    scope
+    roleType
 
-    fixed code
+    dataScope
+
+    scopeDeptId
+
+    remark
 }

@@ -80,20 +80,23 @@ COMMENT ON COLUMN public.sys_dept.owner_user_id IS '部门管理员用户';
 
 CREATE TABLE public.sys_role
 (
-    id         int8         NOT NULL,                                           -- 主键 ID
-    status     int2         NOT NULL DEFAULT 1,                                 -- 数据状态，0：禁用、1：启用
-    created_by int8         NOT NULL,                                           -- 创建人
-    created_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 创建时间
-    updated_by int8         NOT NULL,                                           -- 更新人
-    updated_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新时间
-    deleted_at timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
-    tenant_id  varchar(16)  NOT NULL,                                           -- 租户 ID
-    parent_id  int8         NULL,                                               -- 父角色 ID
-    "name"     varchar(256) NOT NULL,                                           -- 角色名
-    "scope"    int2         NOT NULL,                                           -- 数据范围规则：0-个人 1-本部门 2-部门及子部门 3-指定人 4-全租户 5-自定义
-    code       varchar(64)  NOT NULL,                                           -- 权限编码
+    id            int8         NOT NULL,                                           -- 主键 ID
+    status        int2         NOT NULL DEFAULT 1,                                 -- 数据状态，0：禁用、1：启用
+    created_by    int8         NOT NULL,                                           -- 创建人
+    created_at    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 创建时间
+    updated_by    int8         NOT NULL,                                           -- 更新人
+    updated_at    timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新时间
+    deleted_at    timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
+    tenant_id     varchar(16)  NOT NULL,                                           -- 租户 ID
+    "name"        varchar(256) NOT NULL,                                           -- 角色名
+    code          varchar(64)  NOT NULL,                                           -- 权限编码
+    role_type     int2         NOT NULL DEFAULT 2,                                 -- 角色类型：1-系统预置(不可删除，核心权限不可剥离) 2-租户自定义
+    data_scope    int2         NOT NULL DEFAULT 1,                                 -- 数据范围规则：1-仅本人 2-本部门 3-本部门及子部门 4-指定人 5-指定部门 6-全租户
+    scope_dept_id int8         NULL,                                               -- 组织可见范围：限定角色可分配的部门层级。NULL=全租户可分配，具体部门ID=仅该部门及子部门可分配
+    remark        varchar(512) NULL,                                               -- 备注
     CONSTRAINT sys_role_pkey PRIMARY KEY (id),
-    CONSTRAINT sys_role_tenant_code_un UNIQUE (tenant_id, code)
+    CONSTRAINT sys_role_tenant_code_un UNIQUE (tenant_id, code),
+    CONSTRAINT sys_role_tenant_name_un UNIQUE (tenant_id, name)
 );
 COMMENT ON TABLE public.sys_role IS '角色表';
 
@@ -107,10 +110,12 @@ COMMENT ON COLUMN public.sys_role.updated_by IS '更新人';
 COMMENT ON COLUMN public.sys_role.updated_at IS '更新时间';
 COMMENT ON COLUMN public.sys_role.deleted_at IS '删除时间';
 COMMENT ON COLUMN public.sys_role.tenant_id IS '租户 ID';
-COMMENT ON COLUMN public.sys_role.parent_id IS '父角色 ID';
 COMMENT ON COLUMN public.sys_role."name" IS '角色名';
-COMMENT ON COLUMN public.sys_role."scope" IS '数据范围规则：0-个人 1-本部门 2-部门及子部门 3-指定人 4-全租户 5-自定义';
 COMMENT ON COLUMN public.sys_role.code IS '权限编码';
+COMMENT ON COLUMN public.sys_role.role_type IS '角色类型：1-系统预置(不可删除，核心权限不可剥离) 2-租户自定义';
+COMMENT ON COLUMN public.sys_role.data_scope IS '数据范围规则：1-仅本人 2-本部门 3-本部门及子部门 4-指定人 5-指定部门 6-全租户';
+COMMENT ON COLUMN public.sys_role.scope_dept_id IS '组织可见范围：限定角色可分配的部门层级。NULL=全租户可分配，具体部门ID=仅该部门及子部门可分配';
+COMMENT ON COLUMN public.sys_role.remark IS '备注';
 
 
 -- public.sys_tenant definition
@@ -172,6 +177,7 @@ CREATE TABLE public.sys_user
     "name"        varchar(256) NOT NULL,                                           -- 用户名
     nickname      varchar(256) NOT NULL,                                           -- 昵称
     "password"    text         NOT NULL,                                           -- 密码
+    remark        varchar      NULL,                                               -- 备注
     CONSTRAINT sys_user_pkey PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX sys_user_username_idx ON public.sys_user USING btree (name);
@@ -192,6 +198,7 @@ COMMENT ON COLUMN public.sys_user.owner_dept_id IS '归属部门 ID';
 COMMENT ON COLUMN public.sys_user."name" IS '用户名';
 COMMENT ON COLUMN public.sys_user.nickname IS '昵称';
 COMMENT ON COLUMN public.sys_user."password" IS '密码';
+COMMENT ON COLUMN public.sys_user.remark IS '备注';
 
 
 -- public.user_role_mapping definition

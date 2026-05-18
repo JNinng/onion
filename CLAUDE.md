@@ -73,7 +73,7 @@ Both initialized at startup via `TenantIdConfig` (`@Configuration`) which reads 
 ### Domain Model
 
 - **SysUser** — id (Long, Snowflake), name, nickname, password, roles (M2M via user_role_mapping)
-- **SysRole** — id (Long, Snowflake), RBAC roles with `code` and `scope` (data range)
+- **SysRole** — id (Long, Snowflake), RBAC roles with `code`, `roleType` (system/tenant), `dataScope` (data range rules 1-6), `scopeDeptId` (org visibility), and `remark`
 - **SysTenant** — Multi-tenant support with `id` (String, 16-char Base32 via TenantIdGenerator), `code` and `name`
 - **SysDept** — id (Long, Snowflake), Department hierarchy with `ownerUser` (was `adminUser`)
 - All entities mix in `CreatedAware`, `UpdatedAware`, `StatusAware`, `TenantAware`; some also mix in `OwnerAware` (SysUser, SysDept)

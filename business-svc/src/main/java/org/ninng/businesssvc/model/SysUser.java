@@ -1,5 +1,6 @@
 package org.ninng.businesssvc.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.babyfish.jimmer.sql.*;
 import org.ninng.businesssvc.model.common.*;
@@ -32,6 +33,9 @@ public interface SysUser extends CreatedAware, UpdatedAware, StatusAware, OwnerA
      * 密码
      */
     String password();
+
+    @Nullable
+    String remark();
 
     @ManyToMany
     @JoinTable(

@@ -20,6 +20,8 @@ specification UserSpecification {
 input UserUpdateInput {
     id
 
+    remark
+
     dynamic tenantId
 
     dynamic name?

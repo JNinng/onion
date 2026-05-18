@@ -6,7 +6,8 @@ import org.ninng.businesssvc.model.common.CreatedAware;
 import org.ninng.businesssvc.model.common.StatusAware;
 import org.ninng.businesssvc.model.common.TenantAware;
 import org.ninng.businesssvc.model.common.UpdatedAware;
-import org.ninng.businesssvc.model.t.Scope;
+import org.ninng.businesssvc.model.t.DataScope;
+import org.ninng.businesssvc.model.t.RoleType;
 import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 
 @Entity
@@ -20,29 +21,34 @@ public interface SysRole extends CreatedAware, UpdatedAware, StatusAware, Tenant
     long id();
 
     /**
-     * 父角色 ID
-     */
-    @Nullable
-    @IdView
-    Long parentId();
-
-    @Nullable
-    @ManyToOne
-    SysRole parent();
-
-    /**
      * 角色名
      */
     String name();
 
     /**
-     * 数据范围规则：0-个人 1-本部门 2-部门及子部门 3-指定人 4-全租户 5-自定义
-     */
-    Scope scope();
-
-    /**
      * 权限编码
      */
-    @Nullable
     String code();
+
+    /**
+     * 角色类型：1-系统预置(不可删除，核心权限不可剥离) 2-租户自定义
+     */
+    RoleType roleType();
+
+    /**
+     * 数据范围规则：1-仅本人 2-本部门 3-本部门及子部门 4-指定人 5-指定部门 6-全租户
+     */
+    DataScope dataScope();
+
+    /**
+     * 组织可见范围：限定角色可分配的部门层级。NULL=全租户可分配
+     */
+    @Nullable
+    Long scopeDeptId();
+
+    /**
+     * 备注
+     */
+    @Nullable
+    String remark();
 }

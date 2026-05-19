@@ -5,6 +5,18 @@ UserView {
     #allScalars
 }
 
+UserDetailsView {
+    id
+
+    name
+
+    password
+
+    tenantId
+
+    ownerDeptId
+}
+
 UserSelectionView {
     id as value
 

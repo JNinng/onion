@@ -14,3 +14,13 @@ input RoleCreateInput {
 
     remark
 }
+
+RoleDetailsView {
+    id
+
+    code
+
+    roleType
+
+    dataScope
+}

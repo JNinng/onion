@@ -4,10 +4,10 @@ import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
-import org.ninng.businesssvc.model.Fetchers;
 import org.ninng.businesssvc.model.SysUser;
 import org.ninng.businesssvc.model.SysUserFetcher;
 import org.ninng.businesssvc.model.SysUserTable;
+import org.ninng.businesssvc.model.dto.UserDetailsView;
 import org.ninng.businesssvc.model.dto.UserUpdateInput;
 import org.ninng.businesssvc.model.filter.CommandDataScopeFilter;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,11 +27,11 @@ public class UserRepository extends CommonRepository<SysUser, Long> {
     }
 
     @Nullable
-    @Cacheable(cacheNames = "user", key = "#username")
-    public SysUser findByUsername(String username) {
-        List<SysUser> list = createQuery().where(table.name()
+    @Cacheable(cacheNames = "u", key = "#username")
+    public UserDetailsView findByUsername(String username) {
+        List<UserDetailsView> list = createQuery().where(table.name()
                         .eq(username))
-                .select(table.fetch(Fetchers.SYS_USER_FETCHER.allTableFields()))
+                .select(table.fetch(UserDetailsView.class))
                 .limit(1)
                 .execute();
         if (list.isEmpty()) {

@@ -30,18 +30,13 @@ import java.util.Objects;
 public class JimmerConfig {
 
     @Bean
-    public CacheFactory cacheFactory(RedisConnectionFactory connectionFactory) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.registerModule(new ImmutableModule());
-        CacheCreator creator = new RedisCacheCreatorWarp(connectionFactory, objectMapper)
-                .withKeyPrefixProvider(new PrefixKey(C.ORM_AUTO_KEY_PREFIX))
+    public CacheFactory cacheFactory(RedisConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+        CacheCreator creator = new RedisCacheCreatorWarp(connectionFactory, objectMapper).withKeyPrefixProvider(
+                        new PrefixKey(C.ORM_AUTO_KEY_PREFIX))
                 .withRemoteDuration(C.ORM_AUTO_REMOTE_CACHE_DURATION)
                 .withLocalCache(C.ORM_AUTO_LOCAL_CACHE_SIZE, C.ORM_AUTO_LOCAL_CACHE_DURATION)
-                .withMultiViewProperties(
-                        C.ORM_AUTO_MULTI_VIEW_LOCAL_CACHE_SIZE,
-                        C.ORM_AUTO_MULTI_VIEW_LOCAL_CACHE_DURATION,
-                        C.ORM_AUTO_MULTI_VIEW_REMOTTE_CACHE_DURATION);
+                .withMultiViewProperties(C.ORM_AUTO_MULTI_VIEW_LOCAL_CACHE_SIZE,
+                        C.ORM_AUTO_MULTI_VIEW_LOCAL_CACHE_DURATION, C.ORM_AUTO_MULTI_VIEW_REMOTTE_CACHE_DURATION);
 
         return new AbstractCacheFactory() {
 
@@ -113,8 +108,7 @@ public class JimmerConfig {
 
         @Override
         public <K, V> Cache<K, V> createForObject(ImmutableType type) {
-            return new ChainCacheBuilder<K, V>()
-                    .add(caffeineValueBinder(type))
+            return new ChainCacheBuilder<K, V>().add(caffeineValueBinder(type))
                     .add(redisValueBinder(type))
                     .build();
         }
@@ -122,13 +116,11 @@ public class JimmerConfig {
         @Override
         public <K, V> Cache<K, V> createForProp(ImmutableProp prop, boolean multiView) {
             if (multiView) {
-                return new ChainCacheBuilder<K, V>()
-                        .add(caffeineHashBinder(prop))
+                return new ChainCacheBuilder<K, V>().add(caffeineHashBinder(prop))
                         .add(redisHashBinder(prop))
                         .build();
             }
-            return new ChainCacheBuilder<K, V>()
-                    .add(caffeineValueBinder(prop))
+            return new ChainCacheBuilder<K, V>().add(caffeineValueBinder(prop))
                     .add(redisValueBinder(prop))
                     .build();
         }
@@ -154,8 +146,7 @@ public class JimmerConfig {
             if (!args.useLocalCache) {
                 return null;
             }
-            return CaffeineValueBinder
-                    .<K, V>forObject(type)
+            return CaffeineValueBinder.<K, V>forObject(type)
                     .subscribe(args.tracker)
                     .maximumSize(args.localCacheMaximumSize)
                     .duration(args.localCacheDuration)
@@ -167,8 +158,7 @@ public class JimmerConfig {
             if (!args.useLocalCache) {
                 return null;
             }
-            return CaffeineValueBinder
-                    .<K, V>forProp(prop)
+            return CaffeineValueBinder.<K, V>forProp(prop)
                     .subscribe(args.tracker)
                     .maximumSize(args.localCacheMaximumSize)
                     .duration(args.localCacheDuration)
@@ -180,8 +170,7 @@ public class JimmerConfig {
             if (!args.useMultiViewLocalCache) {
                 return null;
             }
-            return CaffeineHashBinder
-                    .<K, V>forProp(prop)
+            return CaffeineHashBinder.<K, V>forProp(prop)
                     .subscribe(args.tracker)
                     .maximumSize(args.multiViewLocalCacheMaximumSize)
                     .duration(args.multiViewLocalCacheDuration)
@@ -190,8 +179,7 @@ public class JimmerConfig {
 
         private <K, V> SimpleBinder<K, V> redisValueBinder(ImmutableType type) {
             Args args = args();
-            return RedisValueBinder
-                    .<K, V>forObject(type)
+            return RedisValueBinder.<K, V>forObject(type)
                     .publish(args.tracker)
                     .objectMapper(args.objectMapper)
                     .keyPrefixProvider(args.keyPrefixProvider)
@@ -199,17 +187,12 @@ public class JimmerConfig {
                     .randomPercent(args.randomDurationPercent)
                     .redis(args.connectionFactory)
                     .build()
-                    .lock(
-                            args.locker,
-                            args.lockWaitDuration,
-                            args.lockLeaseDuration
-                    );
+                    .lock(args.locker, args.lockWaitDuration, args.lockLeaseDuration);
         }
 
         private <K, V> SimpleBinder<K, V> redisValueBinder(ImmutableProp prop) {
             Args args = args();
-            return RedisValueBinder
-                    .<K, V>forProp(prop)
+            return RedisValueBinder.<K, V>forProp(prop)
                     .publish(args.tracker)
                     .objectMapper(args.objectMapper)
                     .keyPrefixProvider(args.keyPrefixProvider)
@@ -217,17 +200,12 @@ public class JimmerConfig {
                     .randomPercent(args.randomDurationPercent)
                     .redis(args.connectionFactory)
                     .build()
-                    .lock(
-                            args.locker,
-                            args.lockWaitDuration,
-                            args.lockLeaseDuration
-                    );
+                    .lock(args.locker, args.lockWaitDuration, args.lockLeaseDuration);
         }
 
         private <K, V> SimpleBinder.Parameterized<K, V> redisHashBinder(ImmutableProp prop) {
             Args args = args();
-            return RedisHashBinder
-                    .<K, V>forProp(prop)
+            return RedisHashBinder.<K, V>forProp(prop)
                     .publish(args.tracker)
                     .objectMapper(args.objectMapper)
                     .keyPrefixProvider(args.keyPrefixProvider)
@@ -235,11 +213,7 @@ public class JimmerConfig {
                     .randomPercent(args.randomDurationPercent)
                     .redis(args.connectionFactory)
                     .build()
-                    .lock(
-                            args.locker,
-                            args.lockWaitDuration,
-                            args.lockLeaseDuration
-                    );
+                    .lock(args.locker, args.lockWaitDuration, args.lockLeaseDuration);
         }
 
         private static class KeyPrefixCfg extends Cfg {
@@ -278,20 +252,17 @@ public class JimmerConfig {
 
                 this.connectionFactory = root.connectionFactory;
                 ObjectMapper mapper = root.objectMapper;
-                ObjectMapper clonedMapper = mapper != null ?
-                        new ObjectMapper(mapper) {
-                            @Serial
-                            private static final long serialVersionUID = 4803231399318698891L;
-                        } :
-                        new ObjectMapper();
+                ObjectMapper clonedMapper = mapper != null ? new ObjectMapper(mapper) {
+                    @Serial
+                    private static final long serialVersionUID = 4803231399318698891L;
+                } : new ObjectMapper();
                 clonedMapper.registerModule(new JavaTimeModule());
                 clonedMapper.registerModule(new ImmutableModule());
                 this.objectMapper = clonedMapper;
 
                 KeyPrefixCfg keyPrefixCfg = cfg.as(KeyPrefixCfg.class);
-                this.keyPrefixProvider = (keyPrefixCfg != null && keyPrefixCfg.prefixProvider != null)
-                        ? keyPrefixCfg.prefixProvider
-                        : new PrefixKey();
+                this.keyPrefixProvider = (keyPrefixCfg != null && keyPrefixCfg.prefixProvider != null) ?
+                        keyPrefixCfg.prefixProvider : new PrefixKey();
             }
         }
     }

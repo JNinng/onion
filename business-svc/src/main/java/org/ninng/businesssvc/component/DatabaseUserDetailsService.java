@@ -1,8 +1,11 @@
 package org.ninng.businesssvc.component;
 
 import org.ninng.businesssvc.context.UserContextHolder;
-import org.ninng.businesssvc.model.SysUser;
+import org.ninng.businesssvc.model.dto.RoleDetailsView;
+import org.ninng.businesssvc.model.dto.UserDetailsView;
 import org.ninng.businesssvc.repository.UserRepository;
+import org.ninng.businesssvc.repository.UserRoleRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,19 +18,25 @@ import java.util.List;
 public class DatabaseUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
 
-    public DatabaseUserDetailsService(UserRepository userRepository) {
+    public DatabaseUserDetailsService(UserRepository userRepository, UserRoleRepository userRoleRepository) {
         this.userRepository = userRepository;
+        this.userRoleRepository = userRoleRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser user = userRepository.findByUsername(username);
+        UserDetailsView user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        UserContextHolder.setTenantId(user.tenantId());
+        UserContextHolder.setTenantId(user.getTenantId());
         UserContextHolder.setUser(user);
-        return new User(user.name(), user.password(), List.of());
+        List<RoleDetailsView> roleList = userRoleRepository.findByUserId(user.getId());
+        UserContextHolder.setRoles(roleList);
+        return new User(user.getName(), user.getPassword(), roleList.stream()
+                .map(roleDetailsView -> new SimpleGrantedAuthority(roleDetailsView.getCode()))
+                .toList());
     }
 }

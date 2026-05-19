@@ -31,4 +31,15 @@ public class C {
      * 租户ID 字符集（排除 0/O/1/I 等相似字符）
      */
     public final static char[] TENANT_ID_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ".toCharArray();
+
+    public static class Data {
+        /**
+         * 禁用
+         */
+        public final static int DISABLED = 0;
+        /**
+         * 启用
+         */
+        public final static int ENABLED = 1;
+    }
 }

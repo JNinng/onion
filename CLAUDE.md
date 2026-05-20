@@ -5,21 +5,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Run Commands
 
 ```bash
-# Build the entire project (root + business-svc module)
+# Build the project
 ./mvnw clean install -DskipTests
 
-# Run the business-svc module
-./mvnw -pl business-svc spring-boot:run
+# Run the application
+./mvnw spring-boot:run
 
-# Run tests in business-svc module
-./mvnw -pl business-svc test
+# Run all tests
+./mvnw test
 
 # Run a single test class
-./mvnw -pl business-svc test -Dtest=BusinessSvcApplicationTests
+./mvnw test -Dtest=BusinessSvcApplicationTests
 
 # Start dev infrastructure (PostgreSQL + Redis)
-docker compose -f business-svc/compose.yaml up -d
+docker compose -f compose.yaml up -d
 ```
+
+All commands above run from `business-svc/`. The root `pom.xml` is a thin parent (version/encoding only); the `business-svc/pom.xml` is self-contained with all dependencies and the Spring Boot plugin.
 
 ## Project Structure
 
@@ -38,11 +40,12 @@ model/filter/  → Jimmer draft interceptors, data-scope filters, tenant filters
 security/      → Request encryption/decryption (AES, RSA, HMAC), algorithm strategy pattern
 utils/         → Custom ID generators (TenantIdGenerator: 16-char Base32 IDs; SnowflakeIdGenerator: Long Snowflake IDs; both implement Jimmer UserIdGenerator)
 component/     → JWT utils, i18n, auth filter, locale resolver
-config/        → Spring @Configuration: Security, Jimmer cache, Jackson, Redis cache, i18n
+config/        → Spring @Configuration: Security, Jimmer cache, Jackson, CaffeineRedis cache, Redis Pub/Sub invalidation, i18n
 filter/        → OncePerRequestFilter chain (trace ID, user context, security context, etc.)
 handler/       → @RestControllerAdvice global exception handler
 context/       → ThreadLocal holders (UserContext, SecurityContext, LinkContext, SpringContext)
-constant/      → App-wide constants (cache keys, HTTP headers, date formats)
+constant/      → App-wide constants (cache keys, cache channel, HTTP headers, date formats)
+event/        → Cache invalidation events & Spring Event listener/publisher
 entity/        → POJO DTOs for request/response (R<T>, LoginResp, PageReq, etc.)
 ```
 
@@ -54,7 +57,55 @@ entity/        → POJO DTOs for request/response (R<T>, LoginResp, PageReq, etc
 
 **3. Jimmer Fetchers** — Field-level fetch control via `SysUserFetcher.$.allScalarFields().password(false).roles(...)`. Combined with `@FetchBy` on controller method return types for runtime fetch-plan enforcement.
 
-**4. Two-Tier Caching** — Jimmer `ChainCacheBuilder` chains local Caffeine cache (L1) with Redis (L2) for ORM entity caching. Spring `@Cacheable` / `CacheManager` via Redis for manual caching. Cache key prefix: `onion:...`.
+**4. Two-Tier Caching** — `CaffeineRedisCacheManager` (primary `CacheManager`) chains local Caffeine cache (L1, 20min TTL) with Redis (L2, 1day TTL) for manual caching. Jimmer ORM uses its own `ChainCacheBuilder` for entity caching. Cache key prefix: `CacheConstant.KEY_PREFIX` → `"onion"`. Redis channel `CacheConstant.INVALIDATION_CHANNEL` → `"onion:cache:invalidate"`.
+
+### Caching Guide
+
+**Two-tier architecture:** Queries check L1 → L2 → valueLoader; writes sync both layers; evicts clear Redis first then Caffeine. Spring `@Cacheable` repositories benefit from this automatically.
+
+**Cache names** (defined in `CacheConstant`): `USER` = `"u"` (user by username), `USER_ROLE` = `"ur"` (user-role by userId). `KEY_PREFIX` = `"onion"`. `INVALIDATION_CHANNEL` = `"onion:cache:invalidate"`.
+
+**Declarative caching** via `@Cacheable` on repository methods:
+
+```java
+@Cacheable(cacheNames = CacheConstant.USER, key = "#username")
+public UserDetailsView findByUsername(String username) { ... }
+```
+
+**When to evict:** Any data mutation that affects a cached query result must invalidate. E.g., `UserService.update()` changes a user → evict `u` cache; role assignment changes → evict `ur` cache.
+
+**Programmatic single eviction:**
+
+```java
+cacheEventPublisher.evict(CacheConstant.USER, username);
+cacheEventPublisher.clear(CacheConstant.USER);
+```
+
+**Batch eviction** (multiple areas/keys merged into one event):
+
+```java
+cacheEventPublisher.batch()
+    .evict(CacheConstant.USER, username)
+    .evict(CacheConstant.USER_ROLE, userId)
+    .clear(CacheConstant.USER)
+    .publish();
+```
+
+**Event types and flow:** `CacheInvalidateEvent` is a `sealed class` with two subclasses — `Local` (published by `CacheEventPublisher`) and `Redis` (published by `RedisCacheInvalidationConfig` when receiving external messages). `CacheEventListener` listens for both.
+
+```
+Service mutation → CacheEventPublisher → CacheInvalidateEvent.Local
+  → CacheEventListener evicts L1+L2 via CacheManager
+    → publishes to Redis channel (CacheConstant.INVALIDATION_CHANNEL) with instanceId
+      → All instances (including self) receive the Redis message
+        → RedisCacheInvalidationConfig → CacheInvalidateEvent.Redis (carries sourceInstanceId)
+          → CacheEventListener: if sourceInstanceId == own instanceId → skip (already evicted locally)
+          → otherwise → evict L1+L2
+```
+
+**Cross-instance invalidation:** Enable with `onion.cache.invalidation.redis.enabled=true`. Each instance generates a `UUID instanceId` at startup. LOCAL events publish to Redis carrying the `instanceId`; REDIS events carry a `sourceInstanceId`. The listener skips events where `sourceInstanceId` matches the local `instanceId` to avoid double-eviction. IDE autocomplete for this property is configured via `META-INF/additional-spring-configuration-metadata.json`.
+
+**Caffeine tuning** in `CacheConfig.caffeineCacheManager()`: `initialCapacity`, `maximumSize`, `expireAfterWrite`. Redis TTL in `cacheManager()`: `entryTtl(Duration.ofDays(1))`.
 
 **5. Filter Chain Pattern** — `MainOnceFilterHandler` collects all `OnceFilterHandler` beans and runs `before()` before the filter chain, `after()` in the finally block. Implementations: `RequestIdOnceFilterHandler` (trace ID), `SecurityContextOnceFilterHandler` (encryption algorithm), `UserContextOnceFilterHandler` (cleanup).
 

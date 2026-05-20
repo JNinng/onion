@@ -1,0 +1,20 @@
+{
+  "properties": [
+    {
+      "name": "onion.cache.invalidation.redis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Redis Pub/Sub cross-instance cache invalidation.",
+      "sourceType": "org.ninng.businesssvc.config.RedisCacheInvalidationConfig",
+      "defaultValue": false
+    }
+  ],
+  "hints": [
+    {
+      "name": "onion.cache.invalidation.redis.enabled",
+      "values": [
+        { "value": "true", "description": "Enable cross-instance invalidation via Redis channel" },
+        { "value": "false", "description": "Local-only invalidation (default)" }
+      ]
+    }
+  ]
+}

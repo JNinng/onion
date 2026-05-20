@@ -24,8 +24,7 @@ public class DataScopeFilter implements CacheableFilter<OwnerAwareProps> {
         map.put("dataScope", scope.name());
         switch (scope) {
             case PERSONAL -> map.put("ownerUserId", UserContextHolder.getUserId());
-            case DEPARTMENT, DEPARTMENT_AND_SUBDEPARTMENT ->
-                    map.put("ownerDeptId", UserContextHolder.getDeptId());
+            case DEPARTMENT, DEPARTMENT_AND_SUBDEPARTMENT -> map.put("ownerDeptId", UserContextHolder.getDeptId());
             // ALL_TENANT, SPECIFIED, SPECIFIED_DEPT: only dataScope key
             default -> { /* nothing extra */ }
         }

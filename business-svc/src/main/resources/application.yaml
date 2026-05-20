@@ -51,6 +51,13 @@ jwt:
   secret: YourSuperSecretKeyForJwtSigningMustBeLongEnough1234567890
   expiration: 30d
 
+
+onion:
+  cache:
+    invalidation:
+      redis:
+        enabled: true
+
 security:
   default-algorithm: NONE
   aes-secret-key: "vuwxCpFqAnFLDe/Nm/wHoff3QoUk/cAdVF1oNUVrrHA="
@@ -59,4 +66,3 @@ security:
   tenant-id:
     machine-id: 1
     time-mask: "0xDEADBEEFCAFEBABE"
-

@@ -6,6 +6,58 @@
       "description": "Enable Redis Pub/Sub cross-instance cache invalidation.",
       "sourceType": "org.ninng.businesssvc.config.RedisCacheInvalidationConfig",
       "defaultValue": false
+    },
+    {
+      "name": "security.default-algorithm",
+      "type": "java.lang.String",
+      "description": "Default request encryption algorithm. Set to non-NONE to enforce encryption.",
+      "sourceType": "org.ninng.businesssvc.config.SecurityParamConfig",
+      "defaultValue": "NONE"
+    },
+    {
+      "name": "security.aes-secret-key",
+      "type": "java.lang.String",
+      "description": "AES secret key (Base64 encoded, 32 bytes). Auto-generated at startup if not set.",
+      "sourceType": "org.ninng.businesssvc.config.SecurityParamConfig"
+    },
+    {
+      "name": "security.aes-hmac-key",
+      "type": "java.lang.String",
+      "description": "AES HMAC key for integrity verification (Base64 encoded, 16 bytes). Auto-generated at startup if not set.",
+      "sourceType": "org.ninng.businesssvc.config.SecurityParamConfig"
+    },
+    {
+      "name": "security.response-whitelist",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Response fields excluded from encryption (comma-separated).",
+      "sourceType": "org.ninng.businesssvc.config.SecurityParamConfig",
+      "defaultValue": "msg,code"
+    },
+    {
+      "name": "security.rsa-public-key",
+      "type": "java.lang.String",
+      "description": "RSA public key (Base64 encoded). Auto-generated at startup if not set.",
+      "sourceType": "org.ninng.businesssvc.config.SecurityParamConfig"
+    },
+    {
+      "name": "security.rsa-private-key",
+      "type": "java.lang.String",
+      "description": "RSA private key (Base64 encoded). Auto-generated at startup if not set.",
+      "sourceType": "org.ninng.businesssvc.config.SecurityParamConfig"
+    },
+    {
+      "name": "security.tenant-id.machine-id",
+      "type": "java.lang.Integer",
+      "description": "Machine ID for distributed ID generation (0-1023).",
+      "sourceType": "org.ninng.businesssvc.config.TenantIdConfig",
+      "defaultValue": 1
+    },
+    {
+      "name": "security.tenant-id.time-mask",
+      "type": "java.lang.String",
+      "description": "Hex seed for Feistel round key derivation in TenantIdGenerator.",
+      "sourceType": "org.ninng.businesssvc.config.TenantIdConfig",
+      "defaultValue": "0xDEADBEEFCAFEBABE"
     }
   ],
   "hints": [
@@ -14,6 +66,13 @@
       "values": [
         { "value": "true", "description": "Enable cross-instance invalidation via Redis channel" },
         { "value": "false", "description": "Local-only invalidation (default)" }
+      ]
+    },
+    {
+      "name": "security.default-algorithm",
+      "values": [
+        { "value": "NONE", "description": "No encryption (default)" },
+        { "value": "AES", "description": "AES/CBC/PKCS5Padding + HmacSHA256" }
       ]
     }
   ]

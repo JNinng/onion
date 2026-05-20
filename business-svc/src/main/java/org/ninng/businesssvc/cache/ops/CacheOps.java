@@ -60,7 +60,7 @@ public class CacheOps {
         }
 
         // L3: Loader → 空结果自动 evict
-        var loader = loaders.get(domain);
+        CacheLoader<ID, TID, V> loader = loaders.get(domain);
         V loaded = loader.load(key);
         if (loaded != null) {
             strategy.put(redisson, key.fullKey(), loaded);
@@ -122,7 +122,8 @@ public class CacheOps {
         if (missedKeys.isEmpty()) return result;
 
         // L2: Redisson 批量查
-        Map<ID, V> fromRedis = strategy.batchGet(redisson, missedKeys, keyToId::get);
+        @SuppressWarnings("unchecked")
+        Map<ID, V> fromRedis = (Map<ID, V>) (Map<?, ?>) strategy.batchGet(redisson, missedKeys, keyToId::get);
         fromRedis.forEach((id, v) -> {
             result.put(id, v);
             if (localCache != null) localCache.put(domain.buildKeyString(tid, id), v);
@@ -134,7 +135,7 @@ public class CacheOps {
         stillMissing.removeAll(foundIds);
 
         if (!stillMissing.isEmpty()) {
-            var loader = loaders.get(domain);
+            CacheLoader<ID, TID, V> loader = loaders.get(domain);
             var patternKey = domain.buildKey(tid, null);
             Map<ID, V> loaded = loader.batchLoad(patternKey, stillMissing);
 

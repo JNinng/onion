@@ -38,19 +38,19 @@ public class ValueStrategy implements CacheTypeStrategy {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <ID, V> Map<ID, V> batchGet(RedissonClient rc, Set<String> keys,
                                         Function<String, ID> keyToId) {
         var batch = rc.createBatch();
-        Map<String, RFuture<?>> futures = new LinkedHashMap<>();
+        Map<String, RFuture<V>> futures = new LinkedHashMap<>();
         for (String key : keys) {
-            futures.put(key, batch.getBucket(key).getAsync());
+            futures.put(key, batch.<V>getBucket(key).getAsync());
         }
         batch.execute();
 
         Map<ID, V> result = new LinkedHashMap<>();
         futures.forEach((key, future) -> {
-            @SuppressWarnings("unchecked")
-            V value = (V) future.getNow();
+            V value = future.toCompletableFuture().getNow(null);
             if (value != null) {
                 result.put(keyToId.apply(key), value);
             }

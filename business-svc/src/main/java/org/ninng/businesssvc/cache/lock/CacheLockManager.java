@@ -22,7 +22,8 @@ public class CacheLockManager {
         try {
             return lock.tryLock(0, 30, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            Thread.currentThread()
+                    .interrupt();
             return false;
         }
     }

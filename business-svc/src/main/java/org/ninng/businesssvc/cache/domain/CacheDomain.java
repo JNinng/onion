@@ -6,50 +6,9 @@ import org.springframework.lang.Nullable;
 import java.util.Objects;
 import java.util.function.Function;
 
-public sealed class CacheDomain<ID, TID> permits CacheDomains {
-
-    private final String name;
-    private final CacheType type;
-    private final String keyPattern;
-    private final KeySpec spec;
-    private final Class<ID> idType;
-    private final Class<TID> tidType;
-    @Nullable
-    private final Function<Object, ID> idExtractor;
-    @Nullable
-    private final Class<?> valueType;
-
-    CacheDomain(String name, CacheType type, String keyPattern, KeySpec spec,
-                Class<ID> idType, Class<TID> tidType,
-                @Nullable Function<Object, ID> idExtractor,
-                @Nullable Class<?> valueType) {
-        this.name = name;
-        this.type = type;
-        this.keyPattern = keyPattern;
-        this.spec = spec;
-        this.idType = idType;
-        this.tidType = tidType;
-        this.idExtractor = idExtractor;
-        this.valueType = valueType;
-    }
-
-    public String name() { return name; }
-
-    public CacheType type() { return type; }
-
-    public String keyPattern() { return keyPattern; }
-
-    public KeySpec spec() { return spec; }
-
-    public Class<ID> idType() { return idType; }
-
-    public Class<TID> tidType() { return tidType; }
-
-    @Nullable
-    public Function<Object, ID> idExtractor() { return idExtractor; }
-
-    @Nullable
-    public Class<?> valueType() { return valueType; }
+public record CacheDomain<ID, TID>(String name, CacheType type, String keyPattern, KeySpec spec, Class<ID> idType,
+                                   Class<TID> tidType, @Nullable Function<Object, ID> idExtractor,
+                                   @Nullable Class<?> valueType) {
 
     public String buildKeyString(@Nullable TID tid, @Nullable ID id) {
         if (spec.needsTenant() && tid == null) {
@@ -98,8 +57,12 @@ public sealed class CacheDomain<ID, TID> permits CacheDomains {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CacheDomain<?, ?> that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CacheDomain<?, ?> that)) {
+            return false;
+        }
         return name.equals(that.name);
     }
 

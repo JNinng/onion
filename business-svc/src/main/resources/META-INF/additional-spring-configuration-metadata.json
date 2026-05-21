@@ -64,15 +64,27 @@
     {
       "name": "onion.cache.invalidation.redis.enabled",
       "values": [
-        { "value": "true", "description": "Enable cross-instance invalidation via Redis channel" },
-        { "value": "false", "description": "Local-only invalidation (default)" }
+        {
+          "value": "true",
+          "description": "Enable cross-instance invalidation via Redis channel"
+        },
+        {
+          "value": "false",
+          "description": "Local-only invalidation (default)"
+        }
       ]
     },
     {
       "name": "security.default-algorithm",
       "values": [
-        { "value": "NONE", "description": "No encryption (default)" },
-        { "value": "AES", "description": "AES/CBC/PKCS5Padding + HmacSHA256" }
+        {
+          "value": "NONE",
+          "description": "No encryption (default)"
+        },
+        {
+          "value": "AES",
+          "description": "AES/CBC/PKCS5Padding + HmacSHA256"
+        }
       ]
     }
   ]

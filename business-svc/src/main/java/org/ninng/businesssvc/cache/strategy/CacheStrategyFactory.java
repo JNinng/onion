@@ -26,8 +26,19 @@ public class CacheStrategyFactory {
         return strategy;
     }
 
-    public ValueStrategy value() { return (ValueStrategy) get(CacheType.VALUE); }
-    public ListStrategy list()   { return (ListStrategy) get(CacheType.LIST); }
-    public SetStrategy  set()    { return (SetStrategy) get(CacheType.SET); }
-    public HashStrategy hash()   { return (HashStrategy) get(CacheType.HASH); }
+    public ValueStrategy value() {
+        return (ValueStrategy) get(CacheType.VALUE);
+    }
+
+    public ListStrategy list() {
+        return (ListStrategy) get(CacheType.LIST);
+    }
+
+    public SetStrategy set() {
+        return (SetStrategy) get(CacheType.SET);
+    }
+
+    public HashStrategy hash() {
+        return (HashStrategy) get(CacheType.HASH);
+    }
 }

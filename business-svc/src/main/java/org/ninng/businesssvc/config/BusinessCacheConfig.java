@@ -28,8 +28,8 @@ public class BusinessCacheConfig {
     @Bean
     @ConditionalOnProperty(name = "onion.cache.business.local.enabled", havingValue = "true")
     public CacheOps cacheOpsWithLocal(RedissonClient redisson,
-                                       CacheStrategyFactory strategies,
-                                       CacheLoaderRegistry loaders) {
+                                      CacheStrategyFactory strategies,
+                                      CacheLoaderRegistry loaders) {
         return CacheOps.builder()
                 .redisson(redisson)
                 .strategies(strategies)

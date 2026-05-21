@@ -41,6 +41,10 @@ public class CacheOps {
     //  单条操作
     // ═══════════════════════════════════════════
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @SuppressWarnings("unchecked")
     public <ID, TID, V> Optional<V> get(CacheDomain<ID, TID> domain, TID tid, ID id) {
         CacheKey<ID, TID> key = buildKey(domain, tid, id);
@@ -49,13 +53,17 @@ public class CacheOps {
         // L1: Caffeine
         if (localCache != null) {
             V cached = (V) localCache.getIfPresent(key.fullKey());
-            if (cached != null) return Optional.of(cached);
+            if (cached != null) {
+                return Optional.of(cached);
+            }
         }
 
         // L2: Redisson
         Optional<V> result = strategy.get(redisson, key.fullKey());
         if (result.isPresent()) {
-            if (localCache != null) localCache.put(key.fullKey(), result.get());
+            if (localCache != null) {
+                localCache.put(key.fullKey(), result.get());
+            }
             return result;
         }
 
@@ -64,13 +72,17 @@ public class CacheOps {
         V loaded = loader.load(key);
         if (loaded != null) {
             strategy.put(redisson, key.fullKey(), loaded);
-            if (localCache != null) localCache.put(key.fullKey(), loaded);
+            if (localCache != null) {
+                localCache.put(key.fullKey(), loaded);
+            }
             return Optional.of(loaded);
         }
 
         // null → 清理缓存
         strategy.evict(redisson, key.fullKey());
-        if (localCache != null) localCache.invalidate(key.fullKey());
+        if (localCache != null) {
+            localCache.invalidate(key.fullKey());
+        }
         return Optional.empty();
     }
 
@@ -78,22 +90,29 @@ public class CacheOps {
         CacheKey<ID, TID> key = buildKey(domain, tid, id);
         var strategy = strategies.get(domain.type());
         strategy.put(redisson, key.fullKey(), value);
-        if (localCache != null) localCache.put(key.fullKey(), value);
-    }
-
-    public <ID, TID> void evict(CacheDomain<ID, TID> domain, TID tid, ID id) {
-        CacheKey<ID, TID> key = buildKey(domain, tid, id);
-        strategies.get(domain.type()).evict(redisson, key.fullKey());
-        if (localCache != null) localCache.invalidate(key.fullKey());
+        if (localCache != null) {
+            localCache.put(key.fullKey(), value);
+        }
     }
 
     // ═══════════════════════════════════════════
     //  批量操作
     // ═══════════════════════════════════════════
 
+    public <ID, TID> void evict(CacheDomain<ID, TID> domain, TID tid, ID id) {
+        CacheKey<ID, TID> key = buildKey(domain, tid, id);
+        strategies.get(domain.type())
+                .evict(redisson, key.fullKey());
+        if (localCache != null) {
+            localCache.invalidate(key.fullKey());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public <ID, TID, V> Map<ID, V> batchGet(CacheDomain<ID, TID> domain, TID tid, Set<ID> ids) {
-        if (ids.isEmpty()) return Collections.emptyMap();
+        if (ids.isEmpty()) {
+            return Collections.emptyMap();
+        }
         var strategy = strategies.get(domain.type());
 
         Map<String, ID> keyToId = new LinkedHashMap<>();
@@ -119,14 +138,18 @@ public class CacheOps {
             missedKeys = new LinkedHashSet<>(keyToId.keySet());
         }
 
-        if (missedKeys.isEmpty()) return result;
+        if (missedKeys.isEmpty()) {
+            return result;
+        }
 
         // L2: Redisson 批量查
         @SuppressWarnings("unchecked")
         Map<ID, V> fromRedis = (Map<ID, V>) (Map<?, ?>) strategy.batchGet(redisson, missedKeys, keyToId::get);
         fromRedis.forEach((id, v) -> {
             result.put(id, v);
-            if (localCache != null) localCache.put(domain.buildKeyString(tid, id), v);
+            if (localCache != null) {
+                localCache.put(domain.buildKeyString(tid, id), v);
+            }
         });
 
         // L3: 仍未命中 → loader
@@ -148,7 +171,9 @@ public class CacheOps {
             });
             if (!toPut.isEmpty()) {
                 strategy.batchPut(redisson, toPut);
-                if (localCache != null) toPut.forEach((rk, v) -> localCache.put(rk, v));
+                if (localCache != null) {
+                    toPut.forEach((rk, v) -> localCache.put(rk, v));
+                }
             }
             stillMissing.forEach(missedId ->
                     strategy.evict(redisson, domain.buildKeyString(tid, missedId)));
@@ -157,21 +182,30 @@ public class CacheOps {
         return result;
     }
 
-    public <ID, TID, V> void batchPut(CacheDomain<ID, TID> domain, TID tid, Map<ID, V> data) {
-        if (data.isEmpty()) return;
-        Map<String, V> kvMap = new LinkedHashMap<>();
-        data.forEach((id, v) -> kvMap.put(domain.buildKeyString(tid, id), v));
-        strategies.get(domain.type()).batchPut(redisson, kvMap);
-        if (localCache != null) kvMap.forEach(localCache::put);
-    }
-
     // ═══════════════════════════════════════════
     //  全量刷新（加分布式锁）
     // ═══════════════════════════════════════════
 
+    public <ID, TID, V> void batchPut(CacheDomain<ID, TID> domain, TID tid, Map<ID, V> data) {
+        if (data.isEmpty()) {
+            return;
+        }
+        Map<String, V> kvMap = new LinkedHashMap<>();
+        data.forEach((id, v) -> kvMap.put(domain.buildKeyString(tid, id), v));
+        strategies.get(domain.type())
+                .batchPut(redisson, kvMap);
+        if (localCache != null) {
+            kvMap.forEach(localCache::put);
+        }
+    }
+
     public <ID, TID> void refresh(CacheDomain<ID, TID> domain, TID tid) {
         refresh(domain, tid, defaultRefreshStrategy);
     }
+
+    // ═══════════════════════════════════════════
+    //  Hash 扩展操作
+    // ═══════════════════════════════════════════
 
     public <ID, TID> void refresh(CacheDomain<ID, TID> domain, TID tid, RefreshStrategy refreshStrategy) {
         locks.withLockOrThrow(domain.name() + ":" + tid, () -> {
@@ -184,17 +218,15 @@ public class CacheOps {
         });
     }
 
-    // ═══════════════════════════════════════════
-    //  Hash 扩展操作
-    // ═══════════════════════════════════════════
-
     public <ID, TID, V> Optional<V> hget(CacheDomain<ID, TID> domain, TID tid, ID id, String field) {
         assertHash(domain);
         var key = domain.buildKey(tid, id);
         HashStrategy hash = strategies.hash();
 
         Optional<V> result = hash.getField(redisson, key.fullKey(), field);
-        if (result.isPresent()) return result;
+        if (result.isPresent()) {
+            return result;
+        }
 
         var loader = loaders.get(domain);
         Object loaded = loader.load(key);
@@ -212,26 +244,31 @@ public class CacheOps {
     public <ID, TID, V> void hput(CacheDomain<ID, TID> domain, TID tid, ID id, String field, V value) {
         assertHash(domain);
         CacheKey<ID, TID> key = buildKey(domain, tid, id);
-        strategies.hash().putField(redisson, key.fullKey(), field, value);
+        strategies.hash()
+                .putField(redisson, key.fullKey(), field, value);
     }
 
     public <ID, TID, V> Map<String, V> hgetAll(CacheDomain<ID, TID> domain, TID tid, ID id, Set<String> fields) {
         assertHash(domain);
         CacheKey<ID, TID> key = buildKey(domain, tid, id);
-        return strategies.hash().batchGetFields(redisson, key.fullKey(), fields);
-    }
-
-    public <ID, TID, V> void hputAll(CacheDomain<ID, TID> domain, TID tid, ID id, Map<String, V> kvs) {
-        assertHash(domain);
-        CacheKey<ID, TID> key = buildKey(domain, tid, id);
-        strategies.hash().batchPutFields(redisson, key.fullKey(), kvs);
+        return strategies.hash()
+                .batchGetFields(redisson, key.fullKey(), fields);
     }
 
     // ═══════════════════════════════════════════
     //  内部方法与 Builder
     // ═══════════════════════════════════════════
 
-    /** 失效本地缓存（CacheEventBridge 用） */
+    public <ID, TID, V> void hputAll(CacheDomain<ID, TID> domain, TID tid, ID id, Map<String, V> kvs) {
+        assertHash(domain);
+        CacheKey<ID, TID> key = buildKey(domain, tid, id);
+        strategies.hash()
+                .batchPutFields(redisson, key.fullKey(), kvs);
+    }
+
+    /**
+     * 失效本地缓存（CacheEventBridge 用）
+     */
     public <ID, TID> void invalidateLocal(CacheDomain<ID, TID> domain, TID tid, ID id) {
         if (localCache != null) {
             localCache.invalidate(domain.buildKeyString(tid, id));
@@ -242,16 +279,12 @@ public class CacheOps {
         return domain.buildKey(tid, id);
     }
 
+    // ─── Builder ───
+
     private void assertHash(CacheDomain<?, ?> domain) {
         if (domain.type() != CacheType.HASH) {
             throw new CacheTypeMismatchException(CacheType.HASH, domain.type());
         }
-    }
-
-    // ─── Builder ───
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

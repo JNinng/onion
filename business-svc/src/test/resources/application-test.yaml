@@ -1,0 +1,5 @@
+onion:
+  cache:
+    business:
+      local:
+        enabled: true

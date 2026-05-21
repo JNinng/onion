@@ -9,7 +9,10 @@ import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 @Component
@@ -32,39 +35,45 @@ public class HashStrategy implements CacheTypeStrategy {
     public <V> void put(RedissonClient rc, String key, V value) {
         @SuppressWarnings("unchecked")
         Map<String, Object> fields = (Map<String, Object>) value;
-        rc.<String, Object>getMap(key).putAll(fields);
+        rc.<String, Object>getMap(key)
+                .putAll(fields);
     }
 
     @Override
     public void evict(RedissonClient rc, String key) {
-        rc.getMap(key).delete();
+        rc.getMap(key)
+                .delete();
     }
 
     public <V> Optional<V> getField(RedissonClient rc, String key, String field) {
         @SuppressWarnings("unchecked")
-        V value = (V) rc.<String, Object>getMap(key).get(field);
+        V value = (V) rc.<String, Object>getMap(key)
+                .get(field);
         return Optional.ofNullable(value);
     }
 
     public <V> void putField(RedissonClient rc, String key, String field, V value) {
-        rc.<String, V>getMap(key).fastPut(field, value);
+        rc.<String, V>getMap(key)
+                .fastPut(field, value);
     }
 
     public <V> Map<String, V> batchGetFields(RedissonClient rc, String key, Set<String> fields) {
         @SuppressWarnings("unchecked")
-        Map<String, V> result = (Map<String, V>) rc.<String, Object>getMap(key).getAll(fields);
+        Map<String, V> result = (Map<String, V>) rc.<String, Object>getMap(key)
+                .getAll(fields);
         return result;
     }
 
     public <V> void batchPutFields(RedissonClient rc, String key, Map<String, V> kvs) {
         @SuppressWarnings("unchecked")
         Map<String, Object> raw = (Map<String, Object>) kvs;
-        rc.<String, Object>getMap(key).putAll(raw);
+        rc.<String, Object>getMap(key)
+                .putAll(raw);
     }
 
     @Override
     public <ID, V> Map<ID, V> batchGet(RedissonClient rc, Set<String> keys,
-                                        Function<String, ID> keyToId) {
+                                       Function<String, ID> keyToId) {
         Map<ID, V> result = new LinkedHashMap<>();
         for (String key : keys) {
             @SuppressWarnings("unchecked")
@@ -83,8 +92,8 @@ public class HashStrategy implements CacheTypeStrategy {
 
     @Override
     public <ID, TID, V> void refresh(RedissonClient rc, CacheDomain<ID, TID> domain,
-                                      CacheLoader<ID, TID, V> loader, CacheKey<ID, TID> key,
-                                      int pageSize) {
+                                     CacheLoader<ID, TID, V> loader, CacheKey<ID, TID> key,
+                                     int pageSize) {
         var idExtractor = domain.idExtractor();
         int page = 1;
         PageResult<V> pageResult;
@@ -96,7 +105,8 @@ public class HashStrategy implements CacheTypeStrategy {
                     String fullKey = domain.buildKeyString(key.tid(), id);
                     @SuppressWarnings("unchecked")
                     Map<String, Object> fields = (Map<String, Object>) item;
-                    rc.<String, Object>getMap(fullKey).putAll(fields);
+                    rc.<String, Object>getMap(fullKey)
+                            .putAll(fields);
                 }
             }
             page++;

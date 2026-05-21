@@ -5,10 +5,10 @@ import org.springframework.lang.Nullable;
 import java.util.Optional;
 
 public record CacheKey<ID, TID>(
-    CacheDomain<ID, TID> domain,
-    @Nullable TID tid,
-    @Nullable ID id,
-    String[] fields
+        CacheDomain<ID, TID> domain,
+        @Nullable TID tid,
+        @Nullable ID id,
+        String[] fields
 ) {
     public String fullKey() {
         return domain.buildKeyString(tid, id);

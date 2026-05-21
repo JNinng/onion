@@ -8,9 +8,13 @@ import org.ninng.businesssvc.cache.loader.PageResult;
 import org.redisson.api.RBucket;
 import org.redisson.api.RFuture;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.options.KeysScanOptions;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 @Component
@@ -29,28 +33,31 @@ public class ValueStrategy implements CacheTypeStrategy {
 
     @Override
     public <V> void put(RedissonClient rc, String key, V value) {
-        rc.<V>getBucket(key).set(value);
+        rc.<V>getBucket(key)
+                .set(value);
     }
 
     @Override
     public void evict(RedissonClient rc, String key) {
-        rc.getBucket(key).delete();
+        rc.getBucket(key)
+                .delete();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <ID, V> Map<ID, V> batchGet(RedissonClient rc, Set<String> keys,
-                                        Function<String, ID> keyToId) {
+                                       Function<String, ID> keyToId) {
         var batch = rc.createBatch();
         Map<String, RFuture<V>> futures = new LinkedHashMap<>();
         for (String key : keys) {
-            futures.put(key, batch.<V>getBucket(key).getAsync());
+            futures.put(key, batch.<V>getBucket(key)
+                    .getAsync());
         }
         batch.execute();
 
         Map<ID, V> result = new LinkedHashMap<>();
         futures.forEach((key, future) -> {
-            V value = future.toCompletableFuture().getNow(null);
+            V value = future.toCompletableFuture()
+                    .getNow(null);
             if (value != null) {
                 result.put(keyToId.apply(key), value);
             }
@@ -61,14 +68,15 @@ public class ValueStrategy implements CacheTypeStrategy {
     @Override
     public <V> void batchPut(RedissonClient rc, Map<String, V> kvMap) {
         var batch = rc.createBatch();
-        kvMap.forEach((key, value) -> batch.getBucket(key).setAsync(value));
+        kvMap.forEach((key, value) -> batch.getBucket(key)
+                .setAsync(value));
         batch.execute();
     }
 
     @Override
     public <ID, TID, V> void refresh(RedissonClient rc, CacheDomain<ID, TID> domain,
-                                      CacheLoader<ID, TID, V> loader, CacheKey<ID, TID> key,
-                                      int pageSize) {
+                                     CacheLoader<ID, TID, V> loader, CacheKey<ID, TID> key,
+                                     int pageSize) {
         int page = 1;
         PageResult<V> pageResult;
         var idExtractor = domain.idExtractor();
@@ -90,7 +98,8 @@ public class ValueStrategy implements CacheTypeStrategy {
     @Override
     public void clear(RedissonClient rc, String pattern) {
         var keys = rc.getKeys();
-        for (String key : keys.getKeysByPattern(pattern)) {
+        for (String key : keys.getKeys(KeysScanOptions.defaults()
+                .pattern(pattern))) {
             keys.delete(key);
         }
     }

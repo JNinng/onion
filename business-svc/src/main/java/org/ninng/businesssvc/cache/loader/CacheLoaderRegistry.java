@@ -12,17 +12,21 @@ public class CacheLoaderRegistry {
 
     private final Map<CacheDomain<?, ?>, CacheLoader<?, ?, ?>> registry;
 
-    public CacheLoaderRegistry(List<CacheLoader<?, ?, ?>> loaders) {
+    public CacheLoaderRegistry(List<CacheLoader<?, ?, ?>> loaders, CacheDomains cacheDomains) {
         Map<CacheDomain<?, ?>, CacheLoader<?, ?, ?>> map = new LinkedHashMap<>();
         for (CacheLoader<?, ?, ?> loader : loaders) {
-            ForCache anno = loader.getClass().getAnnotation(ForCache.class);
-            if (anno == null) continue;
-            CacheDomain<?, ?> domain = CacheDomains.resolve(anno.value());
+            String domainName = loader.name();
+            if (domainName == null || domainName.isBlank()) {
+                continue;
+            }
+            CacheDomain<?, ?> domain = cacheDomains.resolve(domainName);
             CacheLoader<?, ?, ?> existing = map.put(domain, loader);
             if (existing != null) {
                 throw new IllegalStateException(
                         "Duplicate CacheLoader for domain " + domain.name() +
-                        ": " + existing.getClass().getName() + " and " + loader.getClass().getName());
+                                ": " + existing.getClass()
+                                .getName() + " and " + loader.getClass()
+                                .getName());
             }
         }
         this.registry = Collections.unmodifiableMap(map);

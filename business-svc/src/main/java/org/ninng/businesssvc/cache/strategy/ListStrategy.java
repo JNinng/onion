@@ -7,6 +7,7 @@ import org.ninng.businesssvc.cache.loader.CacheLoader;
 import org.ninng.businesssvc.cache.loader.PageResult;
 import org.redisson.api.RList;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.options.KeysScanOptions;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -41,12 +42,13 @@ public class ListStrategy implements CacheTypeStrategy {
 
     @Override
     public void evict(RedissonClient rc, String key) {
-        rc.getList(key).delete();
+        rc.getList(key)
+                .delete();
     }
 
     @Override
     public <ID, V> Map<ID, V> batchGet(RedissonClient rc, Set<String> keys,
-                                        Function<String, ID> keyToId) {
+                                       Function<String, ID> keyToId) {
         Map<ID, V> result = new LinkedHashMap<>();
         for (String keyStr : keys) {
             @SuppressWarnings("unchecked")
@@ -65,8 +67,8 @@ public class ListStrategy implements CacheTypeStrategy {
 
     @Override
     public <ID, TID, V> void refresh(RedissonClient rc, CacheDomain<ID, TID> domain,
-                                      CacheLoader<ID, TID, V> loader, CacheKey<ID, TID> key,
-                                      int pageSize) {
+                                     CacheLoader<ID, TID, V> loader, CacheKey<ID, TID> key,
+                                     int pageSize) {
         RList<V> list = rc.getList(key.fullKey());
         list.delete();
 
@@ -84,7 +86,8 @@ public class ListStrategy implements CacheTypeStrategy {
     @Override
     public void clear(RedissonClient rc, String pattern) {
         var keys = rc.getKeys();
-        for (String k : keys.getKeysByPattern(pattern)) {
+        for (String k : keys.getKeys(KeysScanOptions.defaults()
+                .pattern(pattern))) {
             keys.delete(k);
         }
     }

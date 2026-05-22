@@ -14,10 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/dept")
 public class DeptController {
-
-    private static final String PREFIX = "dept";
 
     private static final Fetcher<SysDept> DEFAULT_FETCHER = SysDeptFetcher.$.allScalarFields()
             .deletedAt(false);
@@ -29,18 +27,18 @@ public class DeptController {
         this.deptService = deptService;
     }
 
-    @PostMapping(PREFIX + ":create")
+    @PostMapping("create")
     public R<@FetchBy("CREATE_FETCHER") SysDept> createTenant(@RequestBody @Validated DeptCreateInput input) {
         return R.ok(deptService.create(CREATE_FETCHER, input));
     }
 
-    @PostMapping(PREFIX + ":list")
+    @PostMapping("list")
     public R<Page<@FetchBy("DEFAULT_FETCHER") SysDept>> list(
             @RequestBody @Validated DeptSpecification deptSpecification, @Validated PageReq pageReq) {
         return R.ok(deptService.list(DEFAULT_FETCHER, pageReq, deptSpecification));
     }
 
-    @PostMapping(PREFIX + "/{id}:delete")
+    @PostMapping("/delete/{id}")
     public R<Boolean> delete(@PathVariable Long id) {
         return R.ok(deptService.deleteById(id));
     }

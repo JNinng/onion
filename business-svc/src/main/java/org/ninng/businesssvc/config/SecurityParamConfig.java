@@ -17,7 +17,6 @@ import java.util.List;
 public class SecurityParamConfig {
 
     private static KeyPair keyPair;
-
     /**
      * 设置为非 NONE 强制加密
      * NONE (默认)
@@ -33,7 +32,6 @@ public class SecurityParamConfig {
      */
     private String aesHmacKey;
     private List<String> responseWhitelist = List.of("msg", "code");
-
     /**
      * base64 编码
      */

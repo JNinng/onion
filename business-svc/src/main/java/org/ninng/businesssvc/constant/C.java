@@ -4,6 +4,8 @@ import java.time.Duration;
 
 public class C {
 
+    public static final String TRACE_ID = "traceId";
+
     public static final String ORM_AUTO_KEY_PREFIX = CacheConstant.KEY_PREFIX + ":orm:auto:";
     public static final Duration ORM_AUTO_REMOTE_CACHE_DURATION = Duration.ofHours(4);
     public static final int ORM_AUTO_LOCAL_CACHE_SIZE = 1_0000;

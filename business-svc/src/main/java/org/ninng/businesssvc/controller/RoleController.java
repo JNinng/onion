@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/role")
 public class RoleController {
-
-    private static final String PREFIX = "role";
 
     private static final Fetcher<SysRole> DEFAULT_FETCHER = SysRoleFetcher.$.allScalarFields();
 
@@ -25,7 +23,7 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @RequestMapping(PREFIX + ":create")
+    @RequestMapping("create")
     public R<@FetchBy("DEFAULT_FETCHER") SysRole> create(@RequestBody RoleCreateInput input) {
         return R.ok(roleService.create(DEFAULT_FETCHER, input));
     }

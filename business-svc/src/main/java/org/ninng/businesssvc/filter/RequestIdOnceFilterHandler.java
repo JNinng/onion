@@ -16,19 +16,19 @@ public class RequestIdOnceFilterHandler implements OnceFilterHandler {
     @Override
     public void before(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         String requestId = request.getHeader(HttpConstant.REQUEST_ID);
-        if (requestId == null || requestId.trim()
-                .isEmpty()) {
-            requestId = RandomStringUtils.insecure()
-                    .next(C.TRACE_ID_LENGTH, C.LOWER_CASE_ID_ALPHANUMERIC);
-        }
+        String traceId = RandomStringUtils.insecure()
+                .next(C.TRACE_ID_LENGTH, C.LOWER_CASE_ID_ALPHANUMERIC);
+
         response.setHeader(HttpConstant.REQUEST_ID, requestId);
-        LinkContextHolder.setTraceId(requestId);
-        MDC.put(HttpConstant.TRACE_ID, requestId);
+        response.setHeader(HttpConstant.RESPONSE_TRACE_ID, traceId);
+
+        LinkContextHolder.setTraceId(traceId);
+        MDC.put(C.TRACE_ID, traceId);
     }
 
     @Override
     public void after(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         LinkContextHolder.removes();
-        MDC.remove(HttpConstant.TRACE_ID);
+        MDC.remove(C.TRACE_ID);
     }
 }

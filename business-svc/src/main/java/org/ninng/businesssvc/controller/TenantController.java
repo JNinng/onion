@@ -13,10 +13,8 @@ import org.ninng.businesssvc.service.TenantService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/tenant")
 public class TenantController {
-
-    private static final String PREFIX = "tenant";
 
     private static final Fetcher<SysTenant> DEFAULT_FETCHER = SysTenantFetcher.$.allScalarFields()
             .deletedAt(false);
@@ -29,23 +27,23 @@ public class TenantController {
         this.tenantService = tenantService;
     }
 
-    @PostMapping(PREFIX + ":create")
+    @PostMapping("create")
     public R<@FetchBy("CREATE_FETCHER") SysTenant> createTenant(@RequestBody TenantCreateInput input) {
         return R.ok(tenantService.create(CREATE_FETCHER, input));
     }
 
-    @PostMapping(PREFIX + ":list")
+    @PostMapping("list")
     public R<Page<@FetchBy("CREATE_FETCHER") SysTenant>> list(@RequestBody TenantSpecification tenantSpecification,
                                                               PageReq pageReq) {
         return R.ok(tenantService.list(DEFAULT_FETCHER, pageReq, tenantSpecification));
     }
 
-    @PostMapping(PREFIX + "/{tenantCode}:get")
+    @PostMapping("/get/{tenantCode}")
     public R<@FetchBy("DEFAULT_FETCHER") SysTenant> get(@PathVariable String tenantCode) {
         return R.ok(tenantService.findByCode(DEFAULT_FETCHER, tenantCode));
     }
 
-    @PostMapping(PREFIX + "/{id}:delete")
+    @PostMapping("/delelte:{id}")
     public R<Boolean> delete(@PathVariable String id) {
         return R.ok(tenantService.deleteById(id));
     }

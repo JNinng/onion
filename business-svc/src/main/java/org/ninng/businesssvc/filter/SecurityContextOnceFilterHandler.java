@@ -20,12 +20,12 @@ public class SecurityContextOnceFilterHandler implements OnceFilterHandler {
 
     @Override
     public void before(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
-        String acceptAlgorithm = request.getHeader(HttpConstant.ACCEPT_ALGORITHM);
-        if (acceptAlgorithm == null || Algorithm.NONE.getValue()
-                .equals(acceptAlgorithm)) {
-            acceptAlgorithm = securityParamConfig.getDefaultAlgorithm();
+        String expectAlgorithm = request.getHeader(HttpConstant.EXPECT_ALGORITHM);
+        if (expectAlgorithm == null || Algorithm.NONE.getValue()
+                .equals(expectAlgorithm)) {
+            expectAlgorithm = securityParamConfig.getDefaultAlgorithm();
         }
-        SecurityContextHolder.setAcceptAlgorithm(acceptAlgorithm);
+        SecurityContextHolder.setAcceptAlgorithm(expectAlgorithm);
     }
 
     @Override

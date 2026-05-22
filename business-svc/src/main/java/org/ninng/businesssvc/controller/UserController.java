@@ -13,6 +13,7 @@ import org.ninng.businesssvc.model.dto.UserSpecification;
 import org.ninng.businesssvc.model.dto.UserUpdateInput;
 import org.ninng.businesssvc.repository.UserRepository;
 import org.ninng.businesssvc.service.UserService;
+import org.ninng.businesssvc.version.ApiVersion;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/user")
 public class UserController {
-
-    private static final String PREFIX = "user";
 
     private static final Fetcher<SysUser> DEFAULT_FETCHER = SysUserFetcher.$.allScalarFields()
             .password(false)
@@ -38,24 +37,32 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping(PREFIX + ":list")
+    @PostMapping("list")
     public R<Page<@FetchBy("DEFAULT_FETCHER") SysUser>> list(@RequestBody UserSpecification specification,
                                                              PageReq pageReq) {
         return R.ok(userRepository.select(DEFAULT_FETCHER, pageReq, specification));
     }
 
-    @PostMapping(PREFIX + ":update")
+    @PostMapping("update")
     public R<Boolean> update(@RequestBody UserUpdateInput input) {
         return R.ok(userService.update(input));
     }
 
-    @PostMapping(PREFIX + ":selections")
+    @PostMapping("selections")
     public R<List<UserSelectionView>> selections() {
         return R.ok(userRepository.select(UserSelectionView.class));
     }
 
-    @PostMapping(PREFIX + ":test")
+    @ApiVersion(value = "1.6")
+    @PostMapping("test")
     public R<Void> test(@RequestBody UserUpdateInput input) {
+        System.out.println(input);
+        return R.ok(null);
+    }
+
+    @PostMapping("test")
+    @ApiVersion(deprecated = true)
+    public R<Void> test1(@RequestBody UserUpdateInput input) {
         System.out.println(input);
         return R.ok(null);
     }

@@ -144,7 +144,7 @@ public class CacheOps {
 
         // L2: Redisson 批量查
         @SuppressWarnings("unchecked")
-        Map<ID, V> fromRedis = (Map<ID, V>) (Map<?, ?>) strategy.batchGet(redisson, missedKeys, keyToId::get);
+        Map<ID, V> fromRedis = strategy.batchGet(redisson, missedKeys, keyToId::get);
         fromRedis.forEach((id, v) -> {
             result.put(id, v);
             if (localCache != null) {

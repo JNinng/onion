@@ -3,6 +3,7 @@ package org.ninng.businesssvc.version;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.constant.HttpConstant;
+import org.ninng.businesssvc.context.SpringContextHolder;
 import org.ninng.businesssvc.entity.exception.ServiceException;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -53,7 +54,9 @@ public class ApiVersionHandlerMapping extends RequestMappingHandlerMapping {
             String version = request.getHeader(HttpConstant.API_VERSION);
             if (version != null && !version.isBlank()) {
                 throw new ServiceException(
-                        "No handler found for API version: " + version, HttpConstant.ERROR);
+                        SpringContextHolder.getBean(org.ninng.businesssvc.component.I18nUtil.class)
+                                .getMessage("exception.apiVersionNotFound", new Object[]{version}),
+                        HttpConstant.ERROR);
             }
         }
         return handler;

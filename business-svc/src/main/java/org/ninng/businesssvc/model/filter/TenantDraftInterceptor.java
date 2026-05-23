@@ -4,6 +4,7 @@ import org.babyfish.jimmer.meta.TypedProp;
 import org.babyfish.jimmer.sql.DraftInterceptor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+import org.ninng.businesssvc.component.I18nUtil;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.entity.exception.ServiceException;
 import org.ninng.businesssvc.model.common.TenantAware;
@@ -18,6 +19,12 @@ import java.util.Objects;
 @Component
 public class TenantDraftInterceptor implements DraftInterceptor<TenantAware, TenantAwareDraft> {
 
+    private final I18nUtil i18nUtil;
+
+    public TenantDraftInterceptor(I18nUtil i18nUtil) {
+        this.i18nUtil = i18nUtil;
+    }
+
     @Override
     public @Nullable Collection<TypedProp<TenantAware, ?>> dependencies() {
         return List.of(TenantAwareProps.TENANT);
@@ -28,7 +35,7 @@ public class TenantDraftInterceptor implements DraftInterceptor<TenantAware, Ten
         if (original == null) {
             draft.setTenantId(UserContextHolder.getTenantId());
         } else if (!Objects.equals(UserContextHolder.getTenantId(), original.tenantId())) {
-            throw new ServiceException("权限异常", 500);
+            throw new ServiceException(i18nUtil.getMessage("exception.permissionErr"), 500);
         }
     }
 
@@ -40,7 +47,7 @@ public class TenantDraftInterceptor implements DraftInterceptor<TenantAware, Ten
                         .setTenantId(UserContextHolder.getTenantId());
             } else if (!Objects.equals(UserContextHolder.getTenantId(), item.getOriginal()
                     .tenantId())) {
-                throw new ServiceException("权限异常", 500);
+                throw new ServiceException(i18nUtil.getMessage("exception.permissionErr"), 500);
             }
         }
     }

@@ -1,6 +1,8 @@
 package org.ninng.businesssvc.cache.domain;
 
 import org.ninng.businesssvc.cache.exception.CacheKeyArgumentException;
+import org.ninng.businesssvc.component.I18nUtil;
+import org.ninng.businesssvc.context.SpringContextHolder;
 import org.springframework.lang.Nullable;
 
 import java.util.Objects;
@@ -11,11 +13,12 @@ public record CacheDomain<ID, TID>(String name, CacheType type, String keyPatter
                                    @Nullable Class<?> valueType) {
 
     public String buildKeyString(@Nullable TID tid, @Nullable ID id) {
+        I18nUtil i18n = SpringContextHolder.getBean(I18nUtil.class);
         if (spec.needsTenant() && tid == null) {
-            throw new CacheKeyArgumentException("TenantId is required for " + name);
+            throw new CacheKeyArgumentException(i18n.getMessage("exception.tenantIdRequired", new Object[]{name}));
         }
         if (spec.needsId() && id == null) {
-            throw new CacheKeyArgumentException("Id is required for " + name);
+            throw new CacheKeyArgumentException(i18n.getMessage("exception.idRequired", new Object[]{name}));
         }
         return formatKey(tid, id);
     }
@@ -26,8 +29,9 @@ public record CacheDomain<ID, TID>(String name, CacheType type, String keyPatter
     }
 
     public String buildBatchPattern(@Nullable TID tid) {
+        I18nUtil i18n = SpringContextHolder.getBean(I18nUtil.class);
         if (spec.needsTenant() && tid == null) {
-            throw new CacheKeyArgumentException("TenantId is required for batch pattern of " + name);
+            throw new CacheKeyArgumentException(i18n.getMessage("exception.tenantIdRequiredBatch", new Object[]{name}));
         }
         String formatted = formatKey(tid, null);
         if (spec.needsId()) {

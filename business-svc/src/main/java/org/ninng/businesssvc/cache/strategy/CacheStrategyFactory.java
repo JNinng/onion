@@ -1,6 +1,7 @@
 package org.ninng.businesssvc.cache.strategy;
 
 import org.ninng.businesssvc.cache.domain.CacheType;
+import org.ninng.businesssvc.component.I18nUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,8 +13,10 @@ import java.util.stream.Collectors;
 public class CacheStrategyFactory {
 
     private final Map<CacheType, CacheTypeStrategy> strategies;
+    private final I18nUtil i18nUtil;
 
-    public CacheStrategyFactory(List<CacheTypeStrategy> strategyList) {
+    public CacheStrategyFactory(List<CacheTypeStrategy> strategyList, I18nUtil i18nUtil) {
+        this.i18nUtil = i18nUtil;
         this.strategies = strategyList.stream()
                 .collect(Collectors.toMap(CacheTypeStrategy::type, Function.identity()));
     }
@@ -21,7 +24,8 @@ public class CacheStrategyFactory {
     public CacheTypeStrategy get(CacheType type) {
         CacheTypeStrategy strategy = strategies.get(type);
         if (strategy == null) {
-            throw new IllegalArgumentException("No strategy for " + type);
+            throw new IllegalArgumentException(
+                    i18nUtil.getMessage("exception.noStrategy", new Object[]{type}));
         }
         return strategy;
     }

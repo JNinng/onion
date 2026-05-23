@@ -1,6 +1,8 @@
 package org.ninng.businesssvc.cache.lock;
 
 import org.ninng.businesssvc.cache.exception.CacheLockException;
+import org.ninng.businesssvc.component.I18nUtil;
+import org.ninng.businesssvc.context.SpringContextHolder;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 
@@ -51,7 +53,9 @@ public class CacheLockManager {
             action.run();
             return null;
         }, () -> {
-            throw new CacheLockException("Failed to acquire lock for " + scope);
+            throw new CacheLockException(
+                    SpringContextHolder.getBean(I18nUtil.class)
+                            .getMessage("exception.lockFailed", new Object[]{scope}));
         });
     }
 }

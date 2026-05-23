@@ -3,6 +3,7 @@ package org.ninng.businesssvc.cache.loader;
 import org.ninng.businesssvc.cache.domain.CacheDomain;
 import org.ninng.businesssvc.cache.domain.CacheDomains;
 import org.ninng.businesssvc.cache.exception.CacheLoaderNotFoundException;
+import org.ninng.businesssvc.component.I18nUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -12,7 +13,7 @@ public class CacheLoaderRegistry {
 
     private final Map<CacheDomain<?, ?>, CacheLoader<?, ?, ?>> registry;
 
-    public CacheLoaderRegistry(List<CacheLoader<?, ?, ?>> loaders, CacheDomains cacheDomains) {
+    public CacheLoaderRegistry(List<CacheLoader<?, ?, ?>> loaders, CacheDomains cacheDomains, I18nUtil i18nUtil) {
         Map<CacheDomain<?, ?>, CacheLoader<?, ?, ?>> map = new LinkedHashMap<>();
         for (CacheLoader<?, ?, ?> loader : loaders) {
             String domainName = loader.name();
@@ -23,10 +24,7 @@ public class CacheLoaderRegistry {
             CacheLoader<?, ?, ?> existing = map.put(domain, loader);
             if (existing != null) {
                 throw new IllegalStateException(
-                        "Duplicate CacheLoader for domain " + domain.name() +
-                                ": " + existing.getClass()
-                                .getName() + " and " + loader.getClass()
-                                .getName());
+                        i18nUtil.getMessage("exception.duplicateCacheLoader", new Object[]{domain.name()}));
             }
         }
         this.registry = Collections.unmodifiableMap(map);

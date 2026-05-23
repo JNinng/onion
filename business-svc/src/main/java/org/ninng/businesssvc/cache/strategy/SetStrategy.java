@@ -23,7 +23,7 @@ public class SetStrategy implements CacheTypeStrategy {
 
     @Override
     public <V> Optional<V> get(RedissonClient rc, String key) {
-        Set<Object> data = rc.<Object>getSet(key)
+        Set<Object> data = rc.getSet(key)
                 .readAll();
         return data.isEmpty() ? Optional.empty() : Optional.of((V) data);
     }

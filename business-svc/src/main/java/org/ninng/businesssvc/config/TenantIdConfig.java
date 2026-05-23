@@ -1,6 +1,7 @@
 package org.ninng.businesssvc.config;
 
 import jakarta.annotation.PostConstruct;
+import org.ninng.businesssvc.component.I18nUtil;
 import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 import org.ninng.businesssvc.utils.TenantIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +16,18 @@ public class TenantIdConfig {
     @Value("${security.tenant-id.time-mask:0xDEADBEEFCAFEBABE}")
     private String timeMaskHex;
 
+    private final I18nUtil i18nUtil;
+
+    public TenantIdConfig(I18nUtil i18nUtil) {
+        this.i18nUtil = i18nUtil;
+    }
+
     @PostConstruct
     public void init() {
         String hex = timeMaskHex;
         if (hex == null || hex.isEmpty()) {
-            throw new IllegalArgumentException("security.tenant-id.time-mask must not be empty");
+            throw new IllegalArgumentException(
+                    i18nUtil.getMessage("exception.timeMaskEmpty"));
         }
         if (hex.startsWith("0x") || hex.startsWith("0X")) {
             hex = hex.substring(2);

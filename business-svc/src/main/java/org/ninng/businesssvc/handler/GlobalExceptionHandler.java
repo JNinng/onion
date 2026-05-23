@@ -2,6 +2,7 @@ package org.ninng.businesssvc.handler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
+import org.ninng.businesssvc.component.I18nUtil;
 import org.ninng.businesssvc.constant.HttpConstant;
 import org.ninng.businesssvc.entity.R;
 import org.ninng.businesssvc.entity.exception.ServiceException;
@@ -17,13 +18,19 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final I18nUtil i18nUtil;
+
+    public GlobalExceptionHandler(I18nUtil i18nUtil) {
+        this.i18nUtil = i18nUtil;
+    }
+
     @ExceptionHandler(Exception.class)
     public R<?> handleAllExceptions(Exception ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         if (ex.getCause() instanceof JsonParseException) {
-            return R.err("JSON 异常");
+            return R.err(i18nUtil.getMessage("exception.jsonParseErr"));
         }
-        return R.err("未知异常");
+        return R.err(i18nUtil.getMessage("exception.unknownErr"));
     }
 
     @ExceptionHandler(ServiceException.class)

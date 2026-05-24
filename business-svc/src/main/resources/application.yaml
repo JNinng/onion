@@ -46,6 +46,7 @@ jimmer:
       path: /data/ts.zip
   show-sql: true
   pretty-sql: true
+  trigger-type: transaction_only
 
 jwt:
   secret: YourSuperSecretKeyForJwtSigningMustBeLongEnough1234567890

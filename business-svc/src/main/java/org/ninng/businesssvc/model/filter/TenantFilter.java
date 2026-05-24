@@ -22,7 +22,7 @@ public class TenantFilter implements CacheableFilter<TenantAwareProps> {
 
     @Override
     public boolean isAffectedBy(EntityEvent<?> e) {
-        return e.isChanged(TenantAwareProps.TENANT_ID);
+        return e.isChanged(TenantAwareProps.TENANT);
     }
 
     @Override

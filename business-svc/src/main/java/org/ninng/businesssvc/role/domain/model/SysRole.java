@@ -1,16 +1,19 @@
-package org.ninng.businesssvc.model;
+package org.ninng.businesssvc.role.domain.model;
 
 import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.Entity;
 import org.babyfish.jimmer.sql.GeneratedValue;
 import org.babyfish.jimmer.sql.Id;
+import org.babyfish.jimmer.sql.OneToMany;
 import org.ninng.businesssvc.model.common.CreatedAware;
 import org.ninng.businesssvc.model.common.StatusAware;
 import org.ninng.businesssvc.model.common.TenantAware;
 import org.ninng.businesssvc.model.common.UpdatedAware;
-import org.ninng.businesssvc.model.t.DataScope;
-import org.ninng.businesssvc.model.t.RoleType;
+import org.ninng.businesssvc.role.domain.type.DataScope;
+import org.ninng.businesssvc.role.domain.type.RoleType;
 import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
+
+import java.util.List;
 
 @Entity
 public interface SysRole extends CreatedAware, UpdatedAware, StatusAware, TenantAware {
@@ -53,4 +56,7 @@ public interface SysRole extends CreatedAware, UpdatedAware, StatusAware, Tenant
      */
     @Nullable
     String remark();
+
+    @OneToMany(mappedBy = "role")
+    List<SysRoleIdScope> roleIdScopes();
 }

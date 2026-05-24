@@ -5,7 +5,8 @@ import org.babyfish.jimmer.client.FetchBy;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.entity.R;
-import org.ninng.businesssvc.model.SysRoleFetcher;
+import org.ninng.businesssvc.role.domain.model.SysRoleFetcher;
+import org.ninng.businesssvc.role.domain.model.SysRoleIdScopeFetcher;
 import org.ninng.businesssvc.model.SysUser;
 import org.ninng.businesssvc.model.SysUserFetcher;
 import org.ninng.businesssvc.model.dto.UserSelectionView;
@@ -27,7 +28,9 @@ public class UserController {
 
     private static final Fetcher<SysUser> DEFAULT_FETCHER = SysUserFetcher.$.allScalarFields()
             .password(false)
-            .roles(SysRoleFetcher.$.allScalarFields());
+            .roles(SysRoleFetcher.$.allScalarFields()
+                    .roleIdScopes(SysRoleIdScopeFetcher.$.status()
+                            .dataId()));
 
     private final UserService userService;
     private final UserRepository userRepository;

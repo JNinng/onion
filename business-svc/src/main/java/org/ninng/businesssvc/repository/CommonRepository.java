@@ -116,7 +116,7 @@ public abstract class CommonRepository<E, ID> extends AbstractJavaRepository<E, 
         return sql.createQuery(getTable());
     }
 
-    abstract AbstractTypedTable<E> getTable();
+    public abstract AbstractTypedTable<E> getTable();
 
     @SuppressWarnings("unchecked")
     public <T extends CreatedAwareProps> T getCreatedTable() throws ClassCastException {

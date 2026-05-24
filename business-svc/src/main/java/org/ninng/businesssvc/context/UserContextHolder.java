@@ -2,9 +2,9 @@ package org.ninng.businesssvc.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 import org.jspecify.annotations.Nullable;
-import org.ninng.businesssvc.model.dto.RoleDetailsView;
 import org.ninng.businesssvc.model.dto.UserDetailsView;
-import org.ninng.businesssvc.model.t.DataScope;
+import org.ninng.businesssvc.role.application.dto.RoleDetailsView;
+import org.ninng.businesssvc.role.domain.type.DataScope;
 
 import java.util.List;
 

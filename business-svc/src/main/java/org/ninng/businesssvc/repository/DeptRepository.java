@@ -26,7 +26,7 @@ public class DeptRepository extends CommonRepository<SysDept, Long> {
     }
 
     @Override
-    AbstractTypedTable<SysDept> getTable() {
+    public AbstractTypedTable<SysDept> getTable() {
         return table;
     }
 }

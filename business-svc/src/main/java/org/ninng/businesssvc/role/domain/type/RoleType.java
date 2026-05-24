@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.model.t;
+package org.ninng.businesssvc.role.domain.type;
 
 import org.babyfish.jimmer.sql.EnumItem;
 import org.babyfish.jimmer.sql.EnumType;

@@ -223,3 +223,40 @@ COMMENT ON COLUMN public.user_role_mapping.role_id IS '角色 ID';
 COMMENT ON COLUMN public.user_role_mapping.deleted_at IS '删除时间';
 COMMENT ON COLUMN public.user_role_mapping.updated_by IS '更新人';
 COMMENT ON COLUMN public.user_role_mapping.updated_at IS '更新时间';
+
+-- public.sys_role_id_scope definition
+
+-- Drop table
+
+-- DROP TABLE public.sys_role_id_scope;
+
+CREATE TABLE public.sys_role_id_scope
+(
+    id         int8         NOT NULL,                                           -- 主键 ID
+    status     int2         NOT NULL DEFAULT 1,                                 -- 数据状态，0：禁用、1：启用
+    "type"     int2         NOT NULL DEFAULT 1,                                 -- 数据 ID 类型，1：用户ID、2：部门ID
+    role_id    int8         NOT NULL,                                           -- 角色 ID
+    data_id    int8         NOT NULL,                                           -- 数据 ID
+    created_by int8         NOT NULL,                                           -- 创建人
+    created_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 创建时间
+    updated_by int8         NOT NULL,                                           -- 更新人
+    updated_at timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,                 -- 更新时间
+    deleted_at timestamp(0) NULL     DEFAULT NULL::timestamp without time zone, -- 删除时间
+    tenant_id  varchar(16)  NOT NULL,                                           -- 租户 ID
+    CONSTRAINT sys_sys_role_id_scope_pkey PRIMARY KEY (id)
+);
+COMMENT ON TABLE public.sys_role_id_scope IS '角色数据 ID 范围表';
+
+-- Column comments
+
+COMMENT ON COLUMN public.sys_role_id_scope.id IS '主键 ID';
+COMMENT ON COLUMN public.sys_role_id_scope.status IS '数据状态，0：禁用、1：启用';
+COMMENT ON COLUMN public.sys_role_id_scope."type" IS '数据 ID 类型，1：用户ID、2：部门ID';
+COMMENT ON COLUMN public.sys_role_id_scope.role_id IS '角色 ID';
+COMMENT ON COLUMN public.sys_role_id_scope.data_id IS '数据 ID';
+COMMENT ON COLUMN public.sys_role_id_scope.created_by IS '创建人';
+COMMENT ON COLUMN public.sys_role_id_scope.created_at IS '创建时间';
+COMMENT ON COLUMN public.sys_role_id_scope.updated_by IS '更新人';
+COMMENT ON COLUMN public.sys_role_id_scope.updated_at IS '更新时间';
+COMMENT ON COLUMN public.sys_role_id_scope.deleted_at IS '删除时间';
+COMMENT ON COLUMN public.sys_role_id_scope.tenant_id IS '租户 ID';

@@ -5,7 +5,7 @@ import org.babyfish.jimmer.sql.filter.CacheableFilter;
 import org.babyfish.jimmer.sql.filter.FilterArgs;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.model.common.OwnerAwareProps;
-import org.ninng.businesssvc.model.t.DataScope;
+import org.ninng.businesssvc.role.domain.type.DataScope;
 import org.springframework.stereotype.Component;
 
 import java.util.SortedMap;

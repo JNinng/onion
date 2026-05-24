@@ -52,7 +52,7 @@ public class UserRepository extends CommonRepository<SysUser, Long> {
     }
 
     @Override
-    AbstractTypedTable<SysUser> getTable() {
+    public AbstractTypedTable<SysUser> getTable() {
         return table;
     }
 

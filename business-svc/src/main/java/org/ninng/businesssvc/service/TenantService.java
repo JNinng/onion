@@ -5,7 +5,7 @@ import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.ast.query.specification.JSpecification;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
-import org.ninng.businesssvc.model.Immutables;
+import org.ninng.businesssvc.Immutables;
 import org.ninng.businesssvc.model.SysTenant;
 import org.ninng.businesssvc.model.SysTenantTable;
 import org.ninng.businesssvc.model.dto.TenantCreateInput;

@@ -26,7 +26,7 @@ public class TenantRepository extends CommonRepository<SysTenant, String> {
     }
 
     @Override
-    AbstractTypedTable<SysTenant> getTable() {
+    public AbstractTypedTable<SysTenant> getTable() {
         return table;
     }
 

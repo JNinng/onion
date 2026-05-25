@@ -8,7 +8,6 @@ import org.ninng.businesssvc.role.domain.type.DataScope;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 登录用户上下文，基于 {@link TransmittableThreadLocal} 的请求级上下文持有者。

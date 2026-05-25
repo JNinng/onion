@@ -1,10 +1,10 @@
 package org.ninng.businesssvc.component;
 
 import org.ninng.businesssvc.context.UserContextHolder;
-import org.ninng.businesssvc.role.application.dto.RoleDetailsView;
 import org.ninng.businesssvc.model.dto.UserDetailsView;
 import org.ninng.businesssvc.repository.UserRepository;
 import org.ninng.businesssvc.repository.UserRoleRepository;
+import org.ninng.businesssvc.role.application.dto.RoleDetailsView;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

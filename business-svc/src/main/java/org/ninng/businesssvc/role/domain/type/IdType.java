@@ -17,5 +17,5 @@ public enum IdType {
      * 部门 ID
      */
     @EnumItem(ordinal = 2)
-    DEPT;
+    DEPT
 }

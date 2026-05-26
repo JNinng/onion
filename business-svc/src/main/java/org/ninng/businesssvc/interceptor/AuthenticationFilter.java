@@ -1,10 +1,17 @@
-package org.ninng.businesssvc.component;
+package org.ninng.businesssvc.interceptor;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.val;
 import org.jspecify.annotations.NonNull;
+import org.ninng.businesssvc.component.DatabaseUserDetailsService;
+import org.ninng.businesssvc.component.I18nUtil;
+import org.ninng.businesssvc.component.JwtTokenUtil;
+import org.ninng.businesssvc.constant.HttpConstant;
+import org.ninng.businesssvc.context.UserContextHolder;
+import org.ninng.businesssvc.entity.exception.ServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,20 +22,29 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final DatabaseUserDetailsService userDetailsService;
+    private final I18nUtil i18n;
 
-    public JwtAuthenticationFilter(JwtTokenUtil jwtTokenUtil, DatabaseUserDetailsService userDetailsService) {
+    public AuthenticationFilter(JwtTokenUtil jwtTokenUtil, DatabaseUserDetailsService userDetailsService,
+                                I18nUtil i18n) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
+        this.i18n = i18n;
     }
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        val tenantId = request.getHeader(HttpConstant.TENANT_ID);
+        if (tenantId == null) {
+            throw new ServiceException(i18n.getMessage("exception.noTenantId"));
+        }
+        UserContextHolder.setTenantId(tenantId.trim());
+
         final String authorizationHeader = request.getHeader("Authorization");
 
         String username = null;

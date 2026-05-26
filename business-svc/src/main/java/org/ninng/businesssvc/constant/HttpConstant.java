@@ -5,6 +5,7 @@ public class HttpConstant {
     public static final int SUCCESS = 200;
     public static final int FAIL = 500;
     public static final int ERROR = 400;
+    public static final String TENANT_ID = "X-Tenant-ID";
     public static final String REQUEST_ID = "X-Request-ID";
     public static final String RESPONSE_TRACE_ID = "X-Trace-ID";
     /**

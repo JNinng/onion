@@ -1,13 +1,12 @@
 package org.ninng.businesssvc.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
-import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.model.dto.UserDetailsView;
 import org.ninng.businesssvc.role.application.dto.RoleDetailsView;
-import org.ninng.businesssvc.role.domain.type.DataScope;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * 登录用户上下文，基于 {@link TransmittableThreadLocal} 的请求级上下文持有者。
@@ -39,6 +38,11 @@ import java.util.List;
  */
 public class UserContextHolder {
 
+    /**
+     * 用与区分禁用 user dept role，不作用于 tenantId
+     */
+    private static final TransmittableThreadLocal<Boolean> disabled = new TransmittableThreadLocal<>();
+
     private static final TransmittableThreadLocal<String> realTenantId = new TransmittableThreadLocal<>();
     private static final TransmittableThreadLocal<UserDetailsView> realUser = new TransmittableThreadLocal<>();
     private static final TransmittableThreadLocal<Long> realDeptId = new TransmittableThreadLocal<>();
@@ -56,11 +60,37 @@ public class UserContextHolder {
      * <p>由过滤器链在每次请求完成后调用。
      */
     public static void removes() {
+        disabled.remove();
         realTenantId.remove();
         realUser.remove();
         realDeptId.remove();
         realRoles.remove();
         exitShadow();
+    }
+
+    public static boolean isDisabled() {
+        return Boolean.TRUE.equals(disabled.get());
+    }
+
+    public static void setDisabled(boolean disabled) {
+        UserContextHolder.disabled.set(disabled);
+    }
+
+    public static void disable() {
+        UserContextHolder.setDisabled(true);
+    }
+
+    public static void enable() {
+        UserContextHolder.setDisabled(false);
+    }
+
+    public static <T> T callWithDisabled(Supplier<T> supplier) {
+        UserContextHolder.disable();
+        try {
+            return supplier.get();
+        } finally {
+            UserContextHolder.enable();
+        }
     }
 
     /**
@@ -74,7 +104,7 @@ public class UserContextHolder {
      *
      * @return 有效租户 ID，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static String getTenantId() {
         if (isShadow()) {
             return shadowTenantId.get();
@@ -90,7 +120,7 @@ public class UserContextHolder {
      *
      * @param tenantId 租户 ID，可为 {@code null}
      */
-    public static void setTenantId(@Nullable String tenantId) {
+    public static void setTenantId(@NonNull String tenantId) {
         realTenantId.set(tenantId);
     }
 
@@ -101,7 +131,7 @@ public class UserContextHolder {
      *
      * @return 真实租户 ID，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static String getRealTenantId() {
         return realTenantId.get();
     }
@@ -114,7 +144,7 @@ public class UserContextHolder {
      *
      * @param tenantId 代理目标租户 ID
      */
-    public static void setShadowTenantId(@Nullable String tenantId) {
+    public static void setShadowTenantId(@NonNull String tenantId) {
         shadowMode.set(Boolean.TRUE);
         shadowTenantId.set(tenantId);
     }
@@ -130,7 +160,7 @@ public class UserContextHolder {
      *
      * @return 有效用户视图，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static UserDetailsView getUser() {
         if (isShadow()) {
             return shadowUser.get();
@@ -145,7 +175,7 @@ public class UserContextHolder {
      *
      * @param user 用户视图，可为 {@code null}
      */
-    public static void setUser(@Nullable UserDetailsView user) {
+    public static void setUser(@NonNull UserDetailsView user) {
         realUser.set(user);
     }
 
@@ -156,10 +186,9 @@ public class UserContextHolder {
      *
      * @return 有效用户 ID，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static Long getUserId() {
-        UserDetailsView u = getUser();
-        return u != null ? u.getId() : null;
+        return getUser().getId();
     }
 
     /**
@@ -169,7 +198,7 @@ public class UserContextHolder {
      *
      * @return 真实用户视图，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static UserDetailsView getRealUser() {
         return realUser.get();
     }
@@ -181,10 +210,10 @@ public class UserContextHolder {
      *
      * @return 真实用户 ID，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static Long getRealUserId() {
-        UserDetailsView u = realUser.get();
-        return u != null ? u.getId() : null;
+        return realUser.get()
+                .getId();
     }
 
     /**
@@ -195,7 +224,7 @@ public class UserContextHolder {
      *
      * @param user 代理目标用户视图
      */
-    public static void setShadowUser(@Nullable UserDetailsView user) {
+    public static void setShadowUser(@NonNull UserDetailsView user) {
         shadowMode.set(Boolean.TRUE);
         shadowUser.set(user);
     }
@@ -211,7 +240,7 @@ public class UserContextHolder {
      *
      * @return 有效部门 ID，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static Long getDeptId() {
         if (isShadow()) {
             return shadowDeptId.get();
@@ -226,7 +255,7 @@ public class UserContextHolder {
      *
      * @param deptId 部门 ID，可为 {@code null}
      */
-    public static void setDeptId(@Nullable Long deptId) {
+    public static void setDeptId(@NonNull Long deptId) {
         realDeptId.set(deptId);
     }
 
@@ -237,7 +266,7 @@ public class UserContextHolder {
      *
      * @return 真实部门 ID，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static Long getRealDeptId() {
         return realDeptId.get();
     }
@@ -250,7 +279,7 @@ public class UserContextHolder {
      *
      * @param deptId 代理目标部门 ID
      */
-    public static void setShadowDeptId(@Nullable Long deptId) {
+    public static void setShadowDeptId(@NonNull Long deptId) {
         shadowMode.set(Boolean.TRUE);
         shadowDeptId.set(deptId);
     }
@@ -266,7 +295,7 @@ public class UserContextHolder {
      *
      * @return 有效角色列表，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static List<RoleDetailsView> getRoles() {
         if (isShadow()) {
             return shadowRoles.get();
@@ -281,7 +310,7 @@ public class UserContextHolder {
      *
      * @param roles 角色列表，可为 {@code null}
      */
-    public static void setRoles(@Nullable List<RoleDetailsView> roles) {
+    public static void setRoles(@NonNull List<RoleDetailsView> roles) {
         realRoles.set(roles);
     }
 
@@ -290,7 +319,7 @@ public class UserContextHolder {
      *
      * @return 真实角色列表，可能为 {@code null}
      */
-    @Nullable
+    @NonNull
     public static List<RoleDetailsView> getRealRoles() {
         return realRoles.get();
     }
@@ -304,7 +333,7 @@ public class UserContextHolder {
      *
      * @param roles 代理目标角色列表
      */
-    public static void setShadowRoles(@Nullable List<RoleDetailsView> roles) {
+    public static void setShadowRoles(@NonNull List<RoleDetailsView> roles) {
         shadowMode.set(Boolean.TRUE);
         shadowRoles.set(roles);
     }
@@ -320,10 +349,8 @@ public class UserContextHolder {
      * @param deptId   代理目标部门 ID
      * @param roles    代理目标角色列表
      */
-    public static void enterShadow(@Nullable String tenantId,
-                                   @Nullable UserDetailsView user,
-                                   @Nullable Long deptId,
-                                   @Nullable List<RoleDetailsView> roles) {
+    public static void enterShadow(@NonNull String tenantId, @NonNull UserDetailsView user, @NonNull Long deptId,
+                                   @NonNull List<RoleDetailsView> roles) {
         shadowMode.set(Boolean.TRUE);
         shadowTenantId.set(tenantId);
         shadowUser.set(user);
@@ -359,26 +386,6 @@ public class UserContextHolder {
     }
 
     /**
-     * 获取当前有效的数据范围，从有效角色中派生。
-     *
-     * <p>取有效角色列表中 {@code dataScope} 最高权限值（ordinal 最大），
-     * 受影子模式控制。无角色时返回 {@code null}。
-     *
-     * @return 有效数据范围，可能为 {@code null}
-     */
-    @Nullable
-    public static DataScope getDataScope() {
-        List<RoleDetailsView> roles = getRoles();
-        if (roles == null || roles.isEmpty()) {
-            return null;
-        }
-        return roles.stream()
-                .map(RoleDetailsView::getDataScope)
-                .max(Comparator.comparingInt(DataScope::ordinal))
-                .orElse(null);
-    }
-
-    /**
      * 创建当前上下文的完整快照（含真实、影子及模式标记）。
      *
      * <p>用于后台异步任务：提交任务前在主线程调用此方法捕获上下文，
@@ -395,17 +402,8 @@ public class UserContextHolder {
      * @return 不可变快照，包含当前线程的全部上下文
      */
     public static Snapshot snapshot() {
-        return new Snapshot(
-                realTenantId.get(),
-                realUser.get(),
-                realDeptId.get(),
-                realRoles.get(),
-                isShadow(),
-                shadowTenantId.get(),
-                shadowUser.get(),
-                shadowDeptId.get(),
-                shadowRoles.get()
-        );
+        return new Snapshot(realTenantId.get(), realUser.get(), realDeptId.get(), realRoles.get(), isShadow(),
+                shadowTenantId.get(), shadowUser.get(), shadowDeptId.get(), shadowRoles.get());
     }
 
     /**
@@ -415,10 +413,7 @@ public class UserContextHolder {
      *
      * @param snapshot 由 {@link #snapshot()} 创建的快照，可为 {@code null}
      */
-    public static void restore(@Nullable Snapshot snapshot) {
-        if (snapshot == null) {
-            return;
-        }
+    public static void restore(@NonNull Snapshot snapshot) {
         realTenantId.set(snapshot.realTenantId);
         realUser.set(snapshot.realUser);
         realDeptId.set(snapshot.realDeptId);
@@ -443,25 +438,20 @@ public class UserContextHolder {
      */
     public static class Snapshot {
 
-        private final @Nullable String realTenantId;
-        private final @Nullable UserDetailsView realUser;
-        private final @Nullable Long realDeptId;
-        private final @Nullable List<RoleDetailsView> realRoles;
+        private final @NonNull String realTenantId;
+        private final @NonNull UserDetailsView realUser;
+        private final @NonNull Long realDeptId;
+        private final @NonNull List<RoleDetailsView> realRoles;
         private final boolean shadowMode;
-        private final @Nullable String shadowTenantId;
-        private final @Nullable UserDetailsView shadowUser;
-        private final @Nullable Long shadowDeptId;
-        private final @Nullable List<RoleDetailsView> shadowRoles;
+        private final @NonNull String shadowTenantId;
+        private final @NonNull UserDetailsView shadowUser;
+        private final @NonNull Long shadowDeptId;
+        private final @NonNull List<RoleDetailsView> shadowRoles;
 
-        private Snapshot(@Nullable String realTenantId,
-                         @Nullable UserDetailsView realUser,
-                         @Nullable Long realDeptId,
-                         @Nullable List<RoleDetailsView> realRoles,
-                         boolean shadowMode,
-                         @Nullable String shadowTenantId,
-                         @Nullable UserDetailsView shadowUser,
-                         @Nullable Long shadowDeptId,
-                         @Nullable List<RoleDetailsView> shadowRoles) {
+        private Snapshot(@NonNull String realTenantId, @NonNull UserDetailsView realUser, @NonNull Long realDeptId,
+                         @NonNull List<RoleDetailsView> realRoles, boolean shadowMode, @NonNull String shadowTenantId,
+                         @NonNull UserDetailsView shadowUser, @NonNull Long shadowDeptId,
+                         @NonNull List<RoleDetailsView> shadowRoles) {
             this.realTenantId = realTenantId;
             this.realUser = realUser;
             this.realDeptId = realDeptId;
@@ -476,7 +466,7 @@ public class UserContextHolder {
         /**
          * 获取快照中的真实租户 ID。
          */
-        @Nullable
+        @NonNull
         public String getRealTenantId() {
             return realTenantId;
         }
@@ -484,7 +474,7 @@ public class UserContextHolder {
         /**
          * 获取快照中的真实用户信息。
          */
-        @Nullable
+        @NonNull
         public UserDetailsView getRealUser() {
             return realUser;
         }
@@ -492,7 +482,7 @@ public class UserContextHolder {
         /**
          * 获取快照中的真实部门 ID。
          */
-        @Nullable
+        @NonNull
         public Long getRealDeptId() {
             return realDeptId;
         }
@@ -500,7 +490,7 @@ public class UserContextHolder {
         /**
          * 获取快照中的真实角色列表。
          */
-        @Nullable
+        @NonNull
         public List<RoleDetailsView> getRealRoles() {
             return realRoles;
         }
@@ -510,7 +500,7 @@ public class UserContextHolder {
          *
          * @return 影子租户 ID，非影子模式下为 {@code null}
          */
-        @Nullable
+        @NonNull
         public String getShadowTenantId() {
             return shadowTenantId;
         }
@@ -520,7 +510,7 @@ public class UserContextHolder {
          *
          * @return 影子用户视图，非影子模式下为 {@code null}
          */
-        @Nullable
+        @NonNull
         public UserDetailsView getShadowUser() {
             return shadowUser;
         }
@@ -530,7 +520,7 @@ public class UserContextHolder {
          *
          * @return 影子部门 ID，非影子模式下为 {@code null}
          */
-        @Nullable
+        @NonNull
         public Long getShadowDeptId() {
             return shadowDeptId;
         }
@@ -540,7 +530,7 @@ public class UserContextHolder {
          *
          * @return 影子角色列表，非影子模式下为 {@code null}
          */
-        @Nullable
+        @NonNull
         public List<RoleDetailsView> getShadowRoles() {
             return shadowRoles;
         }

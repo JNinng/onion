@@ -19,14 +19,12 @@ import org.babyfish.jimmer.sql.cache.chain.SimpleBinder;
 import org.babyfish.jimmer.sql.cache.spi.AbstractCacheCreator;
 import org.ninng.businesssvc.constant.C;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
-@Configuration
 public class JimmerConfig {
 
     @Bean

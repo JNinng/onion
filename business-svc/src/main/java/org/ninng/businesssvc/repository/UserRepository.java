@@ -27,7 +27,7 @@ public class UserRepository extends CommonRepository<SysUser, Long> {
     }
 
     @Nullable
-    @Cacheable(cacheNames = "u", key = "#username")
+    @Cacheable(cacheNames = "u", key = "#username", unless = "#result==null")
     public UserDetailsView findByUsername(String username) {
         List<UserDetailsView> list = createQuery().where(table.name()
                         .eq(username))

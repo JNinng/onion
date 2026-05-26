@@ -10,13 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TenantIdConfig {
 
+    private final I18nUtil i18nUtil;
     @Value("${security.tenant-id.machine-id:1}")
     private int machineId;
-
     @Value("${security.tenant-id.time-mask:0xDEADBEEFCAFEBABE}")
     private String timeMaskHex;
-
-    private final I18nUtil i18nUtil;
 
     public TenantIdConfig(I18nUtil i18nUtil) {
         this.i18nUtil = i18nUtil;

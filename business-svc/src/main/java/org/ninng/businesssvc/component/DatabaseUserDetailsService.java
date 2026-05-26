@@ -1,6 +1,7 @@
 package org.ninng.businesssvc.component;
 
 import org.ninng.businesssvc.context.UserContextHolder;
+import org.ninng.businesssvc.entity.exception.ServiceException;
 import org.ninng.businesssvc.model.dto.UserDetailsView;
 import org.ninng.businesssvc.repository.UserRepository;
 import org.ninng.businesssvc.repository.UserRoleRepository;
@@ -19,21 +20,40 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
+    private final I18nUtil i18n;
 
-    public DatabaseUserDetailsService(UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    public DatabaseUserDetailsService(UserRepository userRepository, UserRoleRepository userRoleRepository,
+                                      I18nUtil i18n) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+        this.i18n = i18n;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetailsView user = userRepository.findByUsername(username);
+        UserDetailsView user = UserContextHolder.callWithDisabled(() -> userRepository.findByUsername(username));
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        UserContextHolder.setTenantId(user.getTenantId());
+
+        var tenantId = user.getTenantId();
+        if (tenantId == null) {
+            throw new ServiceException(i18n.getMessage("exception.noTenantId"));
+        }
+        UserContextHolder.setTenantId(tenantId);
+
         UserContextHolder.setUser(user);
-        List<RoleDetailsView> roleList = userRoleRepository.findByUserId(user.getId());
+        var ownerDeptId = user.getOwnerDeptId();
+        if (ownerDeptId == null) {
+            throw new ServiceException(i18n.getMessage("exception.noDept"));
+        }
+        UserContextHolder.setDeptId(ownerDeptId);
+
+        List<RoleDetailsView> roleList = UserContextHolder.callWithDisabled(
+                () -> userRoleRepository.findByUserId(user.getId()));
+        if (roleList.isEmpty()) {
+            throw new ServiceException(i18n.getMessage("exception.undistributedRole"));
+        }
         UserContextHolder.setRoles(roleList);
         return new User(user.getName(), user.getPassword(), roleList.stream()
                 .map(roleDetailsView -> new SimpleGrantedAuthority(roleDetailsView.getCode()))

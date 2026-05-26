@@ -3,6 +3,7 @@ package org.ninng.businesssvc.controller;
 import org.babyfish.jimmer.client.FetchBy;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.component.I18nUtil;
+import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.entity.*;
 import org.ninng.businesssvc.model.SysUser;
 import org.ninng.businesssvc.model.SysUserFetcher;
@@ -45,6 +46,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public R<LoginResp> login(@RequestBody LoginInput loginInput) {
+        UserContextHolder.setDisabled(true);
         try {
             return R.ok(authService.login(loginInput));
         } catch (BadCredentialsException e) {

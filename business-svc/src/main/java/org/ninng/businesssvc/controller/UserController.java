@@ -66,6 +66,7 @@ public class UserController {
     @PostMapping("test")
     @ApiVersion(deprecated = true)
     public R<Void> test1(@RequestBody UserUpdateInput input) {
+        userRepository.select(DEFAULT_FETCHER);
         System.out.println(input);
         return R.ok(null);
     }

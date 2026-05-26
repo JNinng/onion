@@ -260,3 +260,125 @@ COMMENT ON COLUMN public.sys_role_id_scope.updated_by IS '更新人';
 COMMENT ON COLUMN public.sys_role_id_scope.updated_at IS '更新时间';
 COMMENT ON COLUMN public.sys_role_id_scope.deleted_at IS '删除时间';
 COMMENT ON COLUMN public.sys_role_id_scope.tenant_id IS '租户 ID';
+
+
+-- public.sys_dept_closure definition
+
+-- Drop table
+
+-- DROP TABLE public.sys_dept_closure;
+
+CREATE TABLE public.sys_dept_closure
+(
+    id            bigserial NOT NULL,
+    ancestor_id   int8      NOT NULL, -- 祖先节点ID
+    descendant_id int8      NOT NULL, -- 后代节点ID
+    "depth"       int4      NOT NULL, -- 深度/距离（0表示自身，1表示直接子节点，2表示孙子节点...）
+    CONSTRAINT sys_dept_closure_pkey PRIMARY KEY (ancestor_id, descendant_id)
+);
+CREATE INDEX idx_closure_ancestor ON public.sys_dept_closure USING btree (ancestor_id);
+CREATE INDEX idx_closure_descendant ON public.sys_dept_closure USING btree (descendant_id);
+COMMENT ON TABLE public.sys_dept_closure IS '部门闭包表';
+
+-- Column comments
+
+COMMENT ON COLUMN public.sys_dept_closure.ancestor_id IS '祖先节点ID';
+COMMENT ON COLUMN public.sys_dept_closure.descendant_id IS '后代节点ID';
+COMMENT ON COLUMN public.sys_dept_closure."depth" IS '深度/距离（0表示自身，1表示直接子节点，2表示孙子节点...）';
+
+--创建触发器函数，监听 sys_dept 表的增删改
+CREATE OR REPLACE FUNCTION fn_maintain_dept_closure()
+    RETURNS TRIGGER AS
+$$
+DECLARE
+    v_old_parent_id INT8;
+    v_new_parent_id INT8;
+BEGIN
+    -- ================= 1. 新增部门 =================
+    IF (TG_OP = 'INSERT') THEN
+        -- 插入自身到自身的路径 (深度0)
+        INSERT INTO sys_dept_closure (ancestor_id, descendant_id, depth)
+        VALUES (NEW.id, NEW.id, 0);
+
+        -- 如果有父节点，复制父节点的所有祖先关系，并指向新节点（深度+1）
+        IF NEW.parent_id IS NOT NULL THEN
+            INSERT INTO sys_dept_closure (ancestor_id, descendant_id, depth)
+            SELECT c.ancestor_id, NEW.id, c.depth + 1
+            FROM sys_dept_closure c
+            WHERE c.descendant_id = NEW.parent_id;
+        END IF;
+
+        RETURN NEW;
+    END IF;
+
+    -- ================= 2. 删除部门 =================
+    IF (TG_OP = 'DELETE') THEN
+        -- 删除与该节点及其所有子节点相关的所有闭包记录
+        -- (因为子节点失去了这个祖先)
+        DELETE
+        FROM sys_dept_closure
+        WHERE descendant_id IN (SELECT descendant_id
+                                FROM sys_dept_closure
+                                WHERE ancestor_id = OLD.id);
+        RETURN OLD;
+    END IF;
+
+    -- ================= 3. 移动部门 (修改 parent_id) =================
+    IF (TG_OP = 'UPDATE' AND NEW.parent_id IS DISTINCT FROM OLD.parent_id) THEN
+        -- 步骤 A: 断开旧关系
+        -- 删除 "旧祖先 -> 该节点及其子节点" 的路径
+        DELETE
+        FROM sys_dept_closure
+        WHERE descendant_id IN (SELECT descendant_id FROM sys_dept_closure WHERE ancestor_id = OLD.id) -- 后代
+          AND ancestor_id IN
+              (SELECT ancestor_id FROM sys_dept_closure WHERE descendant_id = OLD.id AND ancestor_id != OLD.id);
+        -- 旧祖先(排除自身)
+
+        -- 步骤 B: 建立新关系
+        -- 插入 "新祖先 -> 该节点及其子节点" 的路径
+        IF NEW.parent_id IS NOT NULL THEN
+            INSERT INTO sys_dept_closure (ancestor_id, descendant_id, depth)
+            SELECT a.ancestor_id, d.descendant_id, a.depth + d.depth + 1
+            FROM sys_dept_closure a -- 新的祖先路径
+                     CROSS JOIN sys_dept_closure d -- 当前节点及其子节点的路径
+            WHERE a.descendant_id = NEW.parent_id -- 新祖先路径的终点是新父节点
+              AND d.ancestor_id = NEW.id          -- 子路径的起点是当前节点
+              AND a.ancestor_id != d.descendant_id; -- 避免产生环（自己不能是自己的祖先）
+        END IF;
+
+        RETURN NEW;
+    END IF;
+
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+--将触发器绑定到 sys_dept 表
+CREATE TRIGGER trg_maintain_dept_closure
+    AFTER INSERT OR UPDATE OF parent_id OR DELETE
+    ON sys_dept
+    FOR EACH ROW
+EXECUTE FUNCTION fn_maintain_dept_closure();
+
+--初始化闭包表数据
+WITH RECURSIVE dept_path AS (
+    -- 1. 锚点：提取所有节点自身的路径（深度为0）
+    SELECT id AS ancestor_id,
+           id AS descendant_id,
+           0  AS depth
+    FROM sys_dept
+
+    UNION ALL
+
+    -- 2. 递归：向下查找子节点，深度+1
+    SELECT dp.ancestor_id,
+           d.id         AS descendant_id,
+           dp.depth + 1 AS depth
+    FROM dept_path dp
+             INNER JOIN sys_dept d ON d.parent_id = dp.descendant_id)
+-- 3. 插入到闭包表中
+INSERT
+INTO sys_dept_closure (ancestor_id, descendant_id, depth)
+SELECT ancestor_id, descendant_id, depth
+FROM dept_path
+ON CONFLICT (ancestor_id, descendant_id) DO NOTHING; -- 防止重复插入

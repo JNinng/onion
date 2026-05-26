@@ -19,6 +19,11 @@ public class ServiceException extends RuntimeException {
         this.code = HttpConstant.ERROR;
     }
 
+    public ServiceException(String message) {
+        super(message);
+        this.code = HttpConstant.ERROR;
+    }
+
     public ServiceException(int code) {
         this.code = code;
     }

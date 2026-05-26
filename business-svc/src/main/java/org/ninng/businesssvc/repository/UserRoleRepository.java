@@ -1,5 +1,6 @@
 package org.ninng.businesssvc.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.ast.table.AssociationTable;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+@Slf4j
 public class UserRoleRepository {
 
     private final JSqlClient sqlClient;
@@ -28,13 +30,13 @@ public class UserRoleRepository {
     }
 
     @NonNull
-    @Cacheable(cacheNames = CacheConstant.USER_ROLE, key = "#userId")
+    @Cacheable(cacheNames = CacheConstant.USER_ROLE, key = "#userId", unless = "#result==null")
     public List<RoleDetailsView> findByUserId(@Nullable Long userId) {
         return findByUserId(userId, false);
     }
 
     @NonNull
-    @Cacheable(cacheNames = CacheConstant.USER_ROLE, key = "#userId")
+    @Cacheable(cacheNames = CacheConstant.USER_ROLE, key = "#userId", unless = "#result==null")
     public List<RoleDetailsView> findByUserId(@Nullable Long userId, boolean disableTenant) {
         AssociationTable<SysUser, SysUserTableEx, SysRole, SysRoleTableEx> associationTable = AssociationTable.of(
                 SysUserTableEx.class, SysUserTableEx::roles);
@@ -60,6 +62,7 @@ public class UserRoleRepository {
             }
             return list;
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return List.of();
         }
     }

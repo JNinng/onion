@@ -1,16 +1,16 @@
-package org.ninng.businesssvc.role.domain.model;
+package org.ninng.businesssvc.identity.domain.model;
 
 import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.Entity;
 import org.babyfish.jimmer.sql.GeneratedValue;
 import org.babyfish.jimmer.sql.Id;
 import org.babyfish.jimmer.sql.OneToMany;
+import org.ninng.businesssvc.identity.domain.type.DataScope;
+import org.ninng.businesssvc.identity.domain.type.RoleType;
 import org.ninng.businesssvc.model.common.CreatedAware;
 import org.ninng.businesssvc.model.common.StatusAware;
 import org.ninng.businesssvc.model.common.TenantAware;
 import org.ninng.businesssvc.model.common.UpdatedAware;
-import org.ninng.businesssvc.role.domain.type.DataScope;
-import org.ninng.businesssvc.role.domain.type.RoleType;
 import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 
 import java.util.List;

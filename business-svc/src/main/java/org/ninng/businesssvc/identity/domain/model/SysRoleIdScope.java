@@ -1,11 +1,11 @@
-package org.ninng.businesssvc.role.domain.model;
+package org.ninng.businesssvc.identity.domain.model;
 
 import org.babyfish.jimmer.sql.*;
+import org.ninng.businesssvc.identity.domain.type.IdType;
 import org.ninng.businesssvc.model.common.CreatedAware;
 import org.ninng.businesssvc.model.common.StatusAware;
 import org.ninng.businesssvc.model.common.TenantAware;
 import org.ninng.businesssvc.model.common.UpdatedAware;
-import org.ninng.businesssvc.role.domain.type.IdType;
 import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 
 @Entity

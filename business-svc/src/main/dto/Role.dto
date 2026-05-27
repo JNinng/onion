@@ -1,5 +1,5 @@
-export org.ninng.businesssvc.role.domain.model.SysRole
-    -> package org.ninng.businesssvc.role.application.dto
+export org.ninng.businesssvc.identity.domain.model.SysRole
+    -> package org.ninng.businesssvc.identity.application.dto
 
 input RoleCreateInput {
     name

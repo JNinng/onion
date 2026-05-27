@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.role.infrastructure;
+package org.ninng.businesssvc.identity.infrastructure;
 
 import org.babyfish.jimmer.Input;
 import org.babyfish.jimmer.sql.JSqlClient;
@@ -6,13 +6,13 @@ import org.babyfish.jimmer.sql.ast.mutation.AssociatedSaveMode;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
+import org.ninng.businesssvc.identity.application.dto.RoleUpdateInput;
+import org.ninng.businesssvc.identity.domain.model.SysRole;
+import org.ninng.businesssvc.identity.domain.model.SysRoleProps;
+import org.ninng.businesssvc.identity.domain.model.SysRoleTable;
+import org.ninng.businesssvc.identity.domain.port.RolePort;
 import org.ninng.businesssvc.model.filter.CommandDataScopeFilter;
 import org.ninng.businesssvc.repository.CommonRepository;
-import org.ninng.businesssvc.role.application.dto.RoleUpdateInput;
-import org.ninng.businesssvc.role.domain.model.SysRole;
-import org.ninng.businesssvc.role.domain.model.SysRoleProps;
-import org.ninng.businesssvc.role.domain.model.SysRoleTable;
-import org.ninng.businesssvc.role.domain.port.RolePort;
 import org.springframework.stereotype.Repository;
 
 @Repository

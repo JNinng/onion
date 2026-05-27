@@ -1,9 +1,9 @@
-package org.ninng.businesssvc.role.domain.port;
+package org.ninng.businesssvc.identity.domain.port;
 
 import org.babyfish.jimmer.Input;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
-import org.ninng.businesssvc.role.application.dto.RoleUpdateInput;
-import org.ninng.businesssvc.role.domain.model.SysRole;
+import org.ninng.businesssvc.identity.application.dto.RoleUpdateInput;
+import org.ninng.businesssvc.identity.domain.model.SysRole;
 
 public interface RolePort {
 

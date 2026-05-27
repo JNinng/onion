@@ -11,11 +11,6 @@ import java.util.*;
 @Component
 public class GlobalListCacheLoader implements CacheLoader<String, Void, GlobalListItem> {
 
-    @Override
-    public String name() {
-        return CacheTestConfig.GLOBAL_TEST;
-    }
-
     static final List<GlobalListItem> MOCK_DATA = List.of(
             new GlobalListItem("notice", "notice", "通知公告", 0),
             new GlobalListItem("agreement", "agreement", "用户协议", 1),
@@ -28,6 +23,11 @@ public class GlobalListCacheLoader implements CacheLoader<String, Void, GlobalLi
             new GlobalListItem("license", "license", "开源许可", 8),
             new GlobalListItem("terms", "terms", "服务条款", 9)
     );
+
+    @Override
+    public String name() {
+        return CacheTestConfig.GLOBAL_TEST;
+    }
 
     @Override
     @Nullable

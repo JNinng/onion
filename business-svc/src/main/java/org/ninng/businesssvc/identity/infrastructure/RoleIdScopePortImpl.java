@@ -1,11 +1,11 @@
-package org.ninng.businesssvc.role.infrastructure;
+package org.ninng.businesssvc.identity.infrastructure;
 
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
+import org.ninng.businesssvc.identity.domain.model.SysRoleIdScope;
+import org.ninng.businesssvc.identity.domain.model.SysRoleIdScopeTable;
+import org.ninng.businesssvc.identity.domain.port.RoleIdScopePort;
 import org.ninng.businesssvc.repository.CommonRepository;
-import org.ninng.businesssvc.role.domain.model.SysRoleIdScope;
-import org.ninng.businesssvc.role.domain.model.SysRoleIdScopeTable;
-import org.ninng.businesssvc.role.domain.port.RoleIdScopePort;
 import org.springframework.stereotype.Repository;
 
 @Repository

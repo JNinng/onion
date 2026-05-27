@@ -7,9 +7,9 @@ import org.babyfish.jimmer.sql.filter.Filter;
 import org.babyfish.jimmer.sql.filter.FilterArgs;
 import org.ninng.businesssvc.TableExes;
 import org.ninng.businesssvc.context.UserContextHolder;
+import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
+import org.ninng.businesssvc.identity.domain.type.DataScope;
 import org.ninng.businesssvc.model.common.OwnerAwareProps;
-import org.ninng.businesssvc.role.application.dto.RoleDetailsView;
-import org.ninng.businesssvc.role.domain.type.DataScope;
 import org.springframework.stereotype.Component;
 
 @Component

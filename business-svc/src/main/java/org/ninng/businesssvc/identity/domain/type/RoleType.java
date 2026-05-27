@@ -1,21 +1,21 @@
-package org.ninng.businesssvc.role.domain.type;
+package org.ninng.businesssvc.identity.domain.type;
 
 import org.babyfish.jimmer.sql.EnumItem;
 import org.babyfish.jimmer.sql.EnumType;
 
 /**
- * 角色数据 ID 表，data_id 类型
+ * 角色类型枚举
  */
 @EnumType(EnumType.Strategy.ORDINAL)
-public enum IdType {
+public enum RoleType {
     /**
-     * 角色 ID
+     * 系统预置（不可删除，核心权限不可剥离）
      */
     @EnumItem(ordinal = 1)
-    USER,
+    SYSTEM,
     /**
-     * 部门 ID
+     * 租户自定义
      */
     @EnumItem(ordinal = 2)
-    DEPT
+    TENANT
 }

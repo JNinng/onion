@@ -8,12 +8,12 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.ninng.businesssvc.constant.C;
 import org.ninng.businesssvc.constant.CacheConstant;
+import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
+import org.ninng.businesssvc.identity.domain.model.SysRole;
+import org.ninng.businesssvc.identity.domain.model.SysRoleTableEx;
 import org.ninng.businesssvc.model.SysUser;
 import org.ninng.businesssvc.model.SysUserTableEx;
 import org.ninng.businesssvc.model.filter.TenantFilter;
-import org.ninng.businesssvc.role.application.dto.RoleDetailsView;
-import org.ninng.businesssvc.role.domain.model.SysRole;
-import org.ninng.businesssvc.role.domain.model.SysRoleTableEx;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 

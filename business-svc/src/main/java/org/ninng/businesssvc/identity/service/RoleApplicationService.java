@@ -1,10 +1,10 @@
-package org.ninng.businesssvc.role.application.service;
+package org.ninng.businesssvc.identity.service;
 
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
-import org.ninng.businesssvc.role.application.dto.RoleCreateInput;
-import org.ninng.businesssvc.role.application.dto.RoleUpdateInput;
-import org.ninng.businesssvc.role.domain.model.SysRole;
-import org.ninng.businesssvc.role.domain.port.RolePort;
+import org.ninng.businesssvc.identity.application.dto.RoleCreateInput;
+import org.ninng.businesssvc.identity.application.dto.RoleUpdateInput;
+import org.ninng.businesssvc.identity.domain.model.SysRole;
+import org.ninng.businesssvc.identity.domain.port.RolePort;
 import org.springframework.stereotype.Service;
 
 @Service

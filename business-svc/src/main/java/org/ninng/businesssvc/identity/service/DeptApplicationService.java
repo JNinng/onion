@@ -27,7 +27,7 @@ public class DeptApplicationService {
         return deptPort.list(fetcher, pageReq, specification);
     }
 
-    public Boolean deleteById(Long id) {
-        return deptPort.deleteById(id);
+    public Boolean removeById(Long id) {
+        return deptPort.removeById(id);
     }
 }

@@ -21,18 +21,16 @@ public class TenantApplicationService {
     }
 
     public SysTenant create(Fetcher<SysTenant> fetcher, TenantCreateInput input) {
-        return tenantPort.create(fetcher, draft -> {
-            draft.setName(input.getName());
-            draft.setCode(RandomStringIdGenerator.randomTenantCode());
-        });
+        input.setCode(RandomStringIdGenerator.randomTenantCode());
+        return tenantPort.create(fetcher, input);
     }
 
     public SysTenant findByCode(Fetcher<SysTenant> fetcher, @NotNull String tenantCode) {
         return tenantPort.findByCode(fetcher, tenantCode);
     }
 
-    public Boolean deleteById(String id) {
-        return tenantPort.deleteById(id);
+    public Boolean removeById(String id) {
+        return tenantPort.removeById(id);
     }
 
     public Page<SysTenant> list(Fetcher<SysTenant> fetcher, PageReq pageReq,

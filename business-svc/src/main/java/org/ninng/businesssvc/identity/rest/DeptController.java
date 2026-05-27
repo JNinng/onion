@@ -40,6 +40,6 @@ public class DeptController {
 
     @PostMapping("/delete/{id}")
     public R<Boolean> delete(@PathVariable Long id) {
-        return R.ok(deptApplicationService.deleteById(id));
+        return R.ok(deptApplicationService.removeById(id));
     }
 }

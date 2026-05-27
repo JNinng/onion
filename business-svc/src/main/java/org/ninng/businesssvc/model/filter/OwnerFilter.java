@@ -5,7 +5,7 @@ import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.filter.Filter;
 import org.babyfish.jimmer.sql.filter.FilterArgs;
-import org.ninng.businesssvc.TableExes;
+import org.ninng.businesssvc.identity.domain.model.TableExes;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
 import org.ninng.businesssvc.identity.domain.type.DataScope;

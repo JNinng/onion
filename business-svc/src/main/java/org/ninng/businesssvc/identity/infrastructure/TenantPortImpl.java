@@ -42,7 +42,7 @@ public class TenantPortImpl extends CommonRepository<SysTenant, String> implemen
     }
 
     @Override
-    public Boolean deleteById(String id) {
+    public Boolean removeById(String id) {
         return withUpdated().where(table.id().eq(id))
                 .set(table.deletedAt(), LocalDateTime.now())
                 .execute() > 0;

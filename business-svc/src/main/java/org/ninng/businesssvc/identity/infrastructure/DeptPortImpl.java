@@ -42,7 +42,7 @@ public class DeptPortImpl extends CommonRepository<SysDept, Long> implements Dep
     }
 
     @Override
-    public Boolean deleteById(Long id) {
+    public Boolean removeById(Long id) {
         return delete(id);
     }
 }

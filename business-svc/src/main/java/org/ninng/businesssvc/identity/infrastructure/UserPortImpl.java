@@ -72,6 +72,11 @@ public class UserPortImpl extends CommonRepository<SysUser, Long> implements Use
     }
 
     @Override
+    public List<SysUser> select(Fetcher<SysUser> fetcher) {
+        return super.select(fetcher);
+    }
+
+    @Override
     public <V extends View<SysUser>> List<V> select(Class<V> viewClass, UserSpecification specification) {
         return createQuery().where(specification)
                 .orderBy(getCreatedTable().createdAt().desc())

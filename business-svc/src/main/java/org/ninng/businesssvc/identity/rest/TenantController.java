@@ -45,6 +45,6 @@ public class TenantController {
 
     @PostMapping("/delete:{id}")
     public R<Boolean> delete(@PathVariable String id) {
-        return R.ok(tenantApplicationService.deleteById(id));
+        return R.ok(tenantApplicationService.removeById(id));
     }
 }

@@ -25,5 +25,7 @@ public interface UserPort {
 
     <V extends View<SysUser>> List<V> select(Class<V> viewClass, UserSpecification specification);
 
+    List<SysUser> select(Fetcher<SysUser> fetcher);
+
     Page<SysUser> select(Fetcher<SysUser> fetcher, PageReq pageReq, UserSpecification specification);
 }

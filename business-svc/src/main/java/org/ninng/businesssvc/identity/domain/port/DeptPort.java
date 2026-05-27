@@ -12,5 +12,5 @@ public interface DeptPort {
 
     Page<SysDept> list(Fetcher<SysDept> fetcher, PageReq pageReq, DeptSpecification specification);
 
-    Boolean deleteById(Long id);
+    Boolean removeById(Long id);
 }

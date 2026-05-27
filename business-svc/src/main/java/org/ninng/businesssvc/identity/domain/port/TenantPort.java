@@ -15,7 +15,7 @@ public interface TenantPort {
     @Nullable
     SysTenant findByCode(Fetcher<SysTenant> fetcher, @NotNull String code);
 
-    Boolean deleteById(String id);
+    Boolean removeById(String id);
 
     Page<SysTenant> list(Fetcher<SysTenant> fetcher, PageReq pageReq, TenantSpecification specification);
 }

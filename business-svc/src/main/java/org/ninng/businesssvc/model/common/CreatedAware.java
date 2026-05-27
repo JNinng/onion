@@ -7,7 +7,7 @@ import org.babyfish.jimmer.sql.JoinColumn;
 import org.babyfish.jimmer.sql.ManyToOne;
 import org.babyfish.jimmer.sql.MappedSuperclass;
 import org.ninng.businesssvc.constant.DateConstant;
-import org.ninng.businesssvc.model.SysUser;
+import org.ninng.businesssvc.identity.domain.model.SysUser;
 
 import java.time.LocalDateTime;
 

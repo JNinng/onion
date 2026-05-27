@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.*;
 import org.ninng.businesssvc.constant.DateConstant;
-import org.ninng.businesssvc.model.SysUser;
+import org.ninng.businesssvc.identity.domain.model.SysUser;
 
 import java.time.LocalDateTime;
 

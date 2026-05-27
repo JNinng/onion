@@ -8,7 +8,7 @@ import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
 import org.ninng.businesssvc.identity.application.dto.UserUpdateInput;
 import org.ninng.businesssvc.identity.domain.model.SysUser;
-import org.ninng.businesssvc.model.dto.UserSpecification;
+import org.ninng.businesssvc.identity.application.dto.UserSpecification;
 
 import java.util.List;
 

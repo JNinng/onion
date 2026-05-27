@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.IdView;
 import org.babyfish.jimmer.sql.ManyToOne;
 import org.babyfish.jimmer.sql.MappedSuperclass;
-import org.ninng.businesssvc.model.SysTenant;
+import org.ninng.businesssvc.identity.domain.model.SysTenant;
 
 @MappedSuperclass
 public interface TenantAware {

@@ -13,7 +13,7 @@ import org.ninng.businesssvc.identity.application.dto.UserUpdateInput;
 import org.ninng.businesssvc.identity.domain.model.SysUser;
 import org.ninng.businesssvc.identity.domain.model.SysUserTable;
 import org.ninng.businesssvc.identity.domain.port.UserPort;
-import org.ninng.businesssvc.model.dto.UserSpecification;
+import org.ninng.businesssvc.identity.application.dto.UserSpecification;
 import org.ninng.businesssvc.model.filter.CommandDataScopeFilter;
 import org.ninng.businesssvc.repository.CommonRepository;
 import org.springframework.cache.annotation.Cacheable;

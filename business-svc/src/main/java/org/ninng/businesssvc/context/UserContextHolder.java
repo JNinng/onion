@@ -3,7 +3,7 @@ package org.ninng.businesssvc.context;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
-import org.ninng.businesssvc.model.dto.UserDetailsView;
+import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
 
 import java.util.List;
 import java.util.function.Supplier;

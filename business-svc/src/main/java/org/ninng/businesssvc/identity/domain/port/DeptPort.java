@@ -4,7 +4,7 @@ import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.domain.model.SysDept;
-import org.ninng.businesssvc.model.dto.DeptSpecification;
+import org.ninng.businesssvc.identity.application.dto.DeptSpecification;
 
 public interface DeptPort {
 

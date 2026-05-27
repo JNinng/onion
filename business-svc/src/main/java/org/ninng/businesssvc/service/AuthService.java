@@ -6,9 +6,10 @@ import org.ninng.businesssvc.entity.InfoResp;
 import org.ninng.businesssvc.entity.LoginResp;
 import org.ninng.businesssvc.entity.SecretReq;
 import org.ninng.businesssvc.entity.SecretResp;
-import org.ninng.businesssvc.model.SysUser;
-import org.ninng.businesssvc.model.dto.LoginInput;
-import org.ninng.businesssvc.model.dto.RegisterInput;
+import org.ninng.businesssvc.identity.application.dto.LoginInput;
+import org.ninng.businesssvc.identity.application.dto.RegisterInput;
+import org.ninng.businesssvc.identity.domain.model.SysUser;
+import org.ninng.businesssvc.identity.service.UserApplicationService;
 import org.ninng.businesssvc.security.Algorithm;
 import org.ninng.businesssvc.security.AlgorithmHandlerFactory;
 import org.ninng.businesssvc.utils.security.AES;
@@ -26,17 +27,17 @@ import java.util.List;
 @Service
 public class AuthService {
 
-    private final UserService userService;
+    private final UserApplicationService userApplicationService;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final SecurityParamConfig securityParamConfig;
     private final AlgorithmHandlerFactory algorithmHandlerFactory;
 
-    public AuthService(UserService userService, JwtTokenUtil jwtTokenUtil, AuthenticationManager authenticationManager,
+    public AuthService(UserApplicationService userApplicationService, JwtTokenUtil jwtTokenUtil, AuthenticationManager authenticationManager,
                        PasswordEncoder passwordEncoder, SecurityParamConfig securityParamConfig,
                        AlgorithmHandlerFactory algorithmHandlerFactory) {
-        this.userService = userService;
+        this.userApplicationService = userApplicationService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
@@ -81,6 +82,6 @@ public class AuthService {
 
     public SysUser register(RegisterInput registerInput) {
         registerInput.setPassword(passwordEncoder.encode(registerInput.getPassword()));
-        return userService.register(registerInput);
+        return userApplicationService.register(registerInput);
     }
 }

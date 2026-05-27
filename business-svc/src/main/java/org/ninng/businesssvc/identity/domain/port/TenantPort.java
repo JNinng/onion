@@ -6,7 +6,7 @@ import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.domain.model.SysTenant;
-import org.ninng.businesssvc.model.dto.TenantSpecification;
+import org.ninng.businesssvc.identity.application.dto.TenantSpecification;
 
 public interface TenantPort {
 

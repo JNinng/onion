@@ -1,5 +1,5 @@
-export org.ninng.businesssvc.model.SysUser
-    -> package org.ninng.businesssvc.model.dto
+export org.ninng.businesssvc.identity.domain.model.SysUser
+    -> package org.ninng.businesssvc.identity.application.dto
 
 UserView {
     #allScalars

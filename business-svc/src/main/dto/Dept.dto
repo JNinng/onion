@@ -1,5 +1,5 @@
-export org.ninng.businesssvc.model.SysDept
-    -> package org.ninng.businesssvc.model.dto
+export org.ninng.businesssvc.identity.domain.model.SysDept
+    -> package org.ninng.businesssvc.identity.application.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 

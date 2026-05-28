@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.controller;
+package org.ninng.businesssvc.identity.rest;
 
 import org.babyfish.jimmer.client.FetchBy;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;

@@ -7,10 +7,10 @@ import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
+import org.ninng.businesssvc.identity.application.dto.DeptSpecification;
 import org.ninng.businesssvc.identity.domain.model.SysDept;
 import org.ninng.businesssvc.identity.domain.model.SysDeptTable;
 import org.ninng.businesssvc.identity.domain.port.DeptPort;
-import org.ninng.businesssvc.identity.application.dto.DeptSpecification;
 import org.ninng.businesssvc.repository.CommonRepository;
 import org.springframework.stereotype.Repository;
 

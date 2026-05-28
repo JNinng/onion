@@ -1,7 +1,6 @@
 package org.ninng.businesssvc.identity.service;
 
 import org.babyfish.jimmer.Input;
-import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.identity.application.dto.RegisterInput;
 import org.ninng.businesssvc.identity.application.dto.UserUpdateInput;
 import org.ninng.businesssvc.identity.domain.model.SysUser;

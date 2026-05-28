@@ -48,10 +48,17 @@ public class UserRolePortImpl implements UserRolePort {
                     })
                     .createAssociationQuery(associationTable)
                     .where(Predicate.and(
-                            associationTable.source().id().eq(userId),
-                            associationTable.source().status().eq(C.Data.ENABLED),
-                            associationTable.target().status().eq(C.Data.ENABLED)))
-                    .select(associationTable.target().fetch(RoleDetailsView.class))
+                            associationTable.source()
+                                    .id()
+                                    .eq(userId),
+                            associationTable.source()
+                                    .status()
+                                    .eq(C.Data.ENABLED),
+                            associationTable.target()
+                                    .status()
+                                    .eq(C.Data.ENABLED)))
+                    .select(associationTable.target()
+                            .fetch(RoleDetailsView.class))
                     .execute();
             if (list == null) {
                 return List.of();

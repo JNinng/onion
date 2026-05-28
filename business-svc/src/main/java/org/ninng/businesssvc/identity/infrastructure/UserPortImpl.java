@@ -9,11 +9,11 @@ import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
+import org.ninng.businesssvc.identity.application.dto.UserSpecification;
 import org.ninng.businesssvc.identity.application.dto.UserUpdateInput;
 import org.ninng.businesssvc.identity.domain.model.SysUser;
 import org.ninng.businesssvc.identity.domain.model.SysUserTable;
 import org.ninng.businesssvc.identity.domain.port.UserPort;
-import org.ninng.businesssvc.identity.application.dto.UserSpecification;
 import org.ninng.businesssvc.model.filter.CommandDataScopeFilter;
 import org.ninng.businesssvc.repository.CommonRepository;
 import org.springframework.cache.annotation.Cacheable;
@@ -79,7 +79,8 @@ public class UserPortImpl extends CommonRepository<SysUser, Long> implements Use
     @Override
     public <V extends View<SysUser>> List<V> select(Class<V> viewClass, UserSpecification specification) {
         return createQuery().where(specification)
-                .orderBy(getCreatedTable().createdAt().desc())
+                .orderBy(getCreatedTable().createdAt()
+                        .desc())
                 .select(getTable().fetch(viewClass))
                 .execute();
     }

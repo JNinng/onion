@@ -5,9 +5,9 @@ import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.filter.Filter;
 import org.babyfish.jimmer.sql.filter.FilterArgs;
-import org.ninng.businesssvc.identity.domain.model.TableExes;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
+import org.ninng.businesssvc.identity.domain.model.TableExes;
 import org.ninng.businesssvc.identity.domain.type.DataScope;
 import org.ninng.businesssvc.model.common.OwnerAwareProps;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class OwnerFilter implements Filter<OwnerAwareProps> {
 
     @Override
     public void filter(FilterArgs<OwnerAwareProps> args) {
-        if (UserContextHolder.isDisabled()) {
+        if (UserContextHolder.ownerDisabled()) {
             return;
         }
         val roles = UserContextHolder.getRoles();

@@ -46,9 +46,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public R<LoginResp> login(@RequestBody LoginInput loginInput) {
-        UserContextHolder.setDisabled(true);
         try {
-            return R.ok(authService.login(loginInput));
+            return UserContextHolder.withOwnerDisabled(() -> R.ok(authService.login(loginInput)));
         } catch (BadCredentialsException e) {
             return R.fail(i18nUtil.getMessage("auth.login.usernameOrPasswordErr"));
         }

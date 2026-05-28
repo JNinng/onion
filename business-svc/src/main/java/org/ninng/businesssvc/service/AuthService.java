@@ -34,7 +34,8 @@ public class AuthService {
     private final SecurityParamConfig securityParamConfig;
     private final AlgorithmHandlerFactory algorithmHandlerFactory;
 
-    public AuthService(UserApplicationService userApplicationService, JwtTokenUtil jwtTokenUtil, AuthenticationManager authenticationManager,
+    public AuthService(UserApplicationService userApplicationService, JwtTokenUtil jwtTokenUtil,
+                       AuthenticationManager authenticationManager,
                        PasswordEncoder passwordEncoder, SecurityParamConfig securityParamConfig,
                        AlgorithmHandlerFactory algorithmHandlerFactory) {
         this.userApplicationService = userApplicationService;

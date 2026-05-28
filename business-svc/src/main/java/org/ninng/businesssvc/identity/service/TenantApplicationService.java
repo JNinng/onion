@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotNull;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
-import org.ninng.businesssvc.identity.domain.model.SysTenant;
-import org.ninng.businesssvc.identity.domain.port.TenantPort;
 import org.ninng.businesssvc.identity.application.dto.TenantCreateInput;
 import org.ninng.businesssvc.identity.application.dto.TenantSpecification;
+import org.ninng.businesssvc.identity.domain.model.SysTenant;
+import org.ninng.businesssvc.identity.domain.port.TenantPort;
 import org.ninng.businesssvc.utils.RandomStringIdGenerator;
 import org.springframework.stereotype.Service;
 

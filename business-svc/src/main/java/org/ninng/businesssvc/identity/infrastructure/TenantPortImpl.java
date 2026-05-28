@@ -9,10 +9,10 @@ import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
+import org.ninng.businesssvc.identity.application.dto.TenantSpecification;
 import org.ninng.businesssvc.identity.domain.model.SysTenant;
 import org.ninng.businesssvc.identity.domain.model.SysTenantTable;
 import org.ninng.businesssvc.identity.domain.port.TenantPort;
-import org.ninng.businesssvc.identity.application.dto.TenantSpecification;
 import org.ninng.businesssvc.repository.CommonRepository;
 import org.springframework.stereotype.Repository;
 
@@ -43,7 +43,8 @@ public class TenantPortImpl extends CommonRepository<SysTenant, String> implemen
 
     @Override
     public Boolean removeById(String id) {
-        return withUpdated().where(table.id().eq(id))
+        return withUpdated().where(table.id()
+                        .eq(id))
                 .set(table.deletedAt(), LocalDateTime.now())
                 .execute() > 0;
     }
@@ -51,7 +52,8 @@ public class TenantPortImpl extends CommonRepository<SysTenant, String> implemen
     @Nullable
     @Override
     public SysTenant findByCode(Fetcher<SysTenant> fetcher, @NotNull String code) {
-        List<SysTenant> list = createQuery().where(table.code().eq(code))
+        List<SysTenant> list = createQuery().where(table.code()
+                        .eq(code))
                 .select(table.fetch(fetcher))
                 .limit(1)
                 .execute();

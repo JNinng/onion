@@ -37,10 +37,7 @@ import java.util.function.Supplier;
  */
 public class UserContextHolder {
 
-    /**
-     * 用与区分禁用 user dept role，不作用于 tenantId
-     */
-    private static final TransmittableThreadLocal<Boolean> ownerDisabled = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<UserContextMode> mode = new TransmittableThreadLocal<>();
 
     private static final TransmittableThreadLocal<String> realTenantId = new TransmittableThreadLocal<>();
     private static final TransmittableThreadLocal<UserDetailsView> realUser = new TransmittableThreadLocal<>();
@@ -59,7 +56,7 @@ public class UserContextHolder {
      * <p>由过滤器链在每次请求完成后调用。
      */
     public static void removes() {
-        ownerDisabled.remove();
+        mode.remove();
         realTenantId.remove();
         realUser.remove();
         realDeptId.remove();
@@ -67,29 +64,47 @@ public class UserContextHolder {
         exitShadow();
     }
 
-    public static boolean ownerDisabled() {
-        return Boolean.TRUE.equals(ownerDisabled.get());
+    public static UserContextMode getMode() {
+        UserContextMode current = mode.get();
+        return current != null ? current : UserContextMode.DefaultType.INSTANCE;
     }
 
-    public static void setOwnerDisabled(boolean ownerDisabled) {
-        UserContextHolder.ownerDisabled.set(ownerDisabled);
+    public static void setMode(UserContextMode m) {
+        mode.set(m);
     }
 
-    public static void disableOwner() {
-        UserContextHolder.setOwnerDisabled(true);
+    public static <T> T withDefaultMode(Supplier<T> supplier) {
+        return withMode(UserContextMode.DefaultType.INSTANCE, supplier);
     }
 
-    public static void enableOwner() {
-        UserContextHolder.setOwnerDisabled(false);
+    public static <T> T withDisabledMode(Supplier<T> supplier) {
+        return withMode(UserContextMode.DisabledType.INSTANCE, supplier);
     }
 
-    public static <T> T withOwnerDisabled(Supplier<T> supplier) {
-        UserContextHolder.disableOwner();
+    public static <T> T withMode(UserContextMode m, Supplier<T> supplier) {
+        UserContextMode previous = getMode();
+        setMode(m);
         try {
             return supplier.get();
         } finally {
-            UserContextHolder.enableOwner();
+            setMode(previous);
         }
+    }
+
+    public static boolean ownerDisabled() {
+        return !(getMode() instanceof UserContextMode.DefaultType);
+    }
+
+    public static void disableOwner() {
+        setMode(UserContextMode.DisabledType.INSTANCE);
+    }
+
+    public static void enableOwner() {
+        setMode(UserContextMode.DefaultType.INSTANCE);
+    }
+
+    public static <T> T withOwnerDisabled(Supplier<T> supplier) {
+        return withDisabledMode(supplier);
     }
 
     /**
@@ -390,8 +405,8 @@ public class UserContextHolder {
      * @return 不可变快照，包含当前线程的全部上下文
      */
     public static Snapshot snapshot() {
-        return new Snapshot(realTenantId.get(), realUser.get(), realDeptId.get(), realRoles.get(), isShadow(),
-                shadowTenantId.get(), shadowUser.get(), shadowDeptId.get(), shadowRoles.get());
+        return new Snapshot(getMode(), realTenantId.get(), realUser.get(), realDeptId.get(), realRoles.get(),
+                isShadow(), shadowTenantId.get(), shadowUser.get(), shadowDeptId.get(), shadowRoles.get());
     }
 
     /**
@@ -402,6 +417,7 @@ public class UserContextHolder {
      * @param snapshot 由 {@link #snapshot()} 创建的快照，可为 {@code null}
      */
     public static void restore(Snapshot snapshot) {
+        mode.set(snapshot.mode);
         realTenantId.set(snapshot.realTenantId);
         realUser.set(snapshot.realUser);
         realDeptId.set(snapshot.realDeptId);
@@ -426,6 +442,7 @@ public class UserContextHolder {
      */
     public static class Snapshot {
 
+        private final UserContextMode mode;
         private final String realTenantId;
         private final UserDetailsView realUser;
         private final Long realDeptId;
@@ -436,9 +453,10 @@ public class UserContextHolder {
         private final Long shadowDeptId;
         private final List<RoleDetailsView> shadowRoles;
 
-        private Snapshot(String realTenantId, UserDetailsView realUser, Long realDeptId,
+        private Snapshot(UserContextMode mode, String realTenantId, UserDetailsView realUser, Long realDeptId,
                          List<RoleDetailsView> realRoles, boolean shadowMode, String shadowTenantId,
                          UserDetailsView shadowUser, Long shadowDeptId, List<RoleDetailsView> shadowRoles) {
+            this.mode = mode;
             this.realTenantId = realTenantId;
             this.realUser = realUser;
             this.realDeptId = realDeptId;
@@ -448,6 +466,13 @@ public class UserContextHolder {
             this.shadowUser = shadowUser;
             this.shadowDeptId = shadowDeptId;
             this.shadowRoles = shadowRoles;
+        }
+
+        /**
+         * 获取快照中的上下文模式。
+         */
+        public UserContextMode getMode() {
+            return mode;
         }
 
         /**

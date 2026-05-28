@@ -1,7 +1,10 @@
 package org.ninng.businesssvc.identity.application;
 
+import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
+import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.application.dto.RoleCreateInput;
+import org.ninng.businesssvc.identity.application.dto.RoleSpecification;
 import org.ninng.businesssvc.identity.application.dto.RoleUpdateInput;
 import org.ninng.businesssvc.identity.domain.model.SysRole;
 import org.ninng.businesssvc.identity.domain.port.RolePort;
@@ -27,5 +30,9 @@ public class RoleApplicationService {
         }
         input.setRoleIdScopes(null);
         return roleRepository.update(input);
+    }
+
+    public Page<SysRole> list(Fetcher<SysRole> fetcher, PageReq pageReq, RoleSpecification specification) {
+        return roleRepository.select(fetcher, pageReq, specification);
     }
 }

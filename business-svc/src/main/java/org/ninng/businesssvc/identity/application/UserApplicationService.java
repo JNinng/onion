@@ -1,6 +1,5 @@
 package org.ninng.businesssvc.identity.application;
 
-import org.babyfish.jimmer.Input;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
@@ -24,7 +23,7 @@ public class UserApplicationService {
     }
 
     public SysUser register(RegisterInput registerInput) {
-        return userPort.register((Input<SysUser>) registerInput);
+        return userPort.register(registerInput);
     }
 
     public Boolean update(UserUpdateInput input) {

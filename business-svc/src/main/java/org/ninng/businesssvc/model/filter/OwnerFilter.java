@@ -6,6 +6,7 @@ import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.filter.Filter;
 import org.babyfish.jimmer.sql.filter.FilterArgs;
 import org.ninng.businesssvc.context.UserContextHolder;
+import org.ninng.businesssvc.context.UserContextMode;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
 import org.ninng.businesssvc.identity.domain.model.TableExes;
 import org.ninng.businesssvc.identity.domain.type.DataScope;
@@ -23,9 +24,14 @@ public class OwnerFilter implements Filter<OwnerAwareProps> {
 
     @Override
     public void filter(FilterArgs<OwnerAwareProps> args) {
-        if (UserContextHolder.ownerDisabled()) {
-            return;
+        switch (UserContextHolder.getMode()) {
+            case UserContextMode.DefaultType ignored -> ownerFilter(args);
+            case UserContextMode.DisabledType ignored -> {
+            }
         }
+    }
+
+    private void ownerFilter(FilterArgs<OwnerAwareProps> args) {
         val roles = UserContextHolder.getRoles();
         val allTenant = roles.stream()
                 .filter(roleDetailsView -> DataScope.ALL_TENANT.equals(roleDetailsView.getDataScope()))

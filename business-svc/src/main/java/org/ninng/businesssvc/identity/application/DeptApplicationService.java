@@ -1,6 +1,5 @@
 package org.ninng.businesssvc.identity.application;
 
-import org.babyfish.jimmer.Input;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
@@ -20,7 +19,7 @@ public class DeptApplicationService {
     }
 
     public SysDept create(Fetcher<SysDept> fetcher, DeptCreateInput input) {
-        return deptPort.create(fetcher, (Input<SysDept>) input);
+        return deptPort.create(fetcher, input);
     }
 
     public Page<SysDept> list(Fetcher<SysDept> fetcher, PageReq pageReq, DeptSpecification specification) {

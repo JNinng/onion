@@ -5,11 +5,11 @@ import org.babyfish.jimmer.client.FetchBy;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.entity.R;
+import org.ninng.businesssvc.identity.application.TenantApplicationService;
 import org.ninng.businesssvc.identity.application.dto.TenantCreateInput;
 import org.ninng.businesssvc.identity.application.dto.TenantSpecification;
 import org.ninng.businesssvc.identity.domain.model.SysTenant;
 import org.ninng.businesssvc.identity.domain.model.SysTenantFetcher;
-import org.ninng.businesssvc.identity.application.TenantApplicationService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

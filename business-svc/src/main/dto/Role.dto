@@ -15,6 +15,12 @@ input RoleCreateInput {
     remark
 }
 
+specification RoleSpecification {
+    name
+
+    remark
+}
+
 input RoleUpdateInput {
     id
 
@@ -47,4 +53,6 @@ RoleDetailsView {
     roleType
 
     dataScope
+
+    scopeDeptId
 }

@@ -20,9 +20,6 @@ public class RoleCheckerPortImpl implements CheckerPort {
     @Override
     public boolean checkOwnerUser(@NonNull List<Long> changeRoleIds, UserDetailsView user,
                                   @NonNull List<RoleDetailsView> roles) {
-        if (user == null) {
-            return false;
-        }
-        return true;
+        return user != null;
     }
 }

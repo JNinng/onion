@@ -9,7 +9,7 @@ import org.ninng.businesssvc.identity.application.dto.TenantCreateInput;
 import org.ninng.businesssvc.identity.application.dto.TenantSpecification;
 import org.ninng.businesssvc.identity.domain.model.SysTenant;
 import org.ninng.businesssvc.identity.domain.model.SysTenantFetcher;
-import org.ninng.businesssvc.identity.service.TenantApplicationService;
+import org.ninng.businesssvc.identity.application.TenantApplicationService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

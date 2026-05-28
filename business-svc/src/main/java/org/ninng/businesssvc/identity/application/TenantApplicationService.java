@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.identity.service;
+package org.ninng.businesssvc.identity.application;
 
 import jakarta.validation.constraints.NotNull;
 import org.babyfish.jimmer.Page;

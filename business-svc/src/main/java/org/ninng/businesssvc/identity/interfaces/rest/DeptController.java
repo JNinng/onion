@@ -9,7 +9,7 @@ import org.ninng.businesssvc.identity.application.dto.DeptCreateInput;
 import org.ninng.businesssvc.identity.application.dto.DeptSpecification;
 import org.ninng.businesssvc.identity.domain.model.SysDept;
 import org.ninng.businesssvc.identity.domain.model.SysDeptFetcher;
-import org.ninng.businesssvc.identity.service.DeptApplicationService;
+import org.ninng.businesssvc.identity.application.DeptApplicationService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.identity.service;
+package org.ninng.businesssvc.identity.application;
 
 import org.babyfish.jimmer.Input;
 import org.babyfish.jimmer.Page;

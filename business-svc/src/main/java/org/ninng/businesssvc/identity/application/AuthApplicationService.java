@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.service;
+package org.ninng.businesssvc.identity.application;
 
 import org.ninng.businesssvc.component.JwtTokenUtil;
 import org.ninng.businesssvc.config.SecurityParamConfig;
@@ -9,7 +9,6 @@ import org.ninng.businesssvc.entity.SecretResp;
 import org.ninng.businesssvc.identity.application.dto.LoginInput;
 import org.ninng.businesssvc.identity.application.dto.RegisterInput;
 import org.ninng.businesssvc.identity.domain.model.SysUser;
-import org.ninng.businesssvc.identity.service.UserApplicationService;
 import org.ninng.businesssvc.security.Algorithm;
 import org.ninng.businesssvc.security.AlgorithmHandlerFactory;
 import org.ninng.businesssvc.utils.security.AES;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AuthService {
+public class AuthApplicationService {
 
     private final UserApplicationService userApplicationService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -34,10 +33,10 @@ public class AuthService {
     private final SecurityParamConfig securityParamConfig;
     private final AlgorithmHandlerFactory algorithmHandlerFactory;
 
-    public AuthService(UserApplicationService userApplicationService, JwtTokenUtil jwtTokenUtil,
-                       AuthenticationManager authenticationManager,
-                       PasswordEncoder passwordEncoder, SecurityParamConfig securityParamConfig,
-                       AlgorithmHandlerFactory algorithmHandlerFactory) {
+    public AuthApplicationService(UserApplicationService userApplicationService, JwtTokenUtil jwtTokenUtil,
+                                  AuthenticationManager authenticationManager,
+                                  PasswordEncoder passwordEncoder, SecurityParamConfig securityParamConfig,
+                                  AlgorithmHandlerFactory algorithmHandlerFactory) {
         this.userApplicationService = userApplicationService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.authenticationManager = authenticationManager;
@@ -70,12 +69,10 @@ public class AuthService {
     }
 
     public LoginResp login(LoginInput loginInput) {
-        // 认证用户
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginInput.getName(),
                         loginInput.getPassword()));
 
-        // 生成 Token
         final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         final String jwt = jwtTokenUtil.generateToken(userDetails.getUsername());
         return new LoginResp(jwt);

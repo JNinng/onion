@@ -7,7 +7,7 @@ import org.ninng.businesssvc.identity.application.dto.RoleCreateInput;
 import org.ninng.businesssvc.identity.application.dto.RoleUpdateInput;
 import org.ninng.businesssvc.identity.domain.model.SysRole;
 import org.ninng.businesssvc.identity.domain.model.SysRoleFetcher;
-import org.ninng.businesssvc.identity.service.RoleApplicationService;
+import org.ninng.businesssvc.identity.application.RoleApplicationService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

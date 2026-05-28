@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.identity.service;
+package org.ninng.businesssvc.identity.application;
 
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.identity.application.dto.RoleCreateInput;

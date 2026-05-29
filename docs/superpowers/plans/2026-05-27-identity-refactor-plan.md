@@ -750,7 +750,7 @@ import org.ninng.businesssvc.identity.domain.model.SysTenant;
 import org.ninng.businesssvc.identity.domain.port.TenantPort;
 import org.ninng.businesssvc.model.dto.TenantCreateInput;
 import org.ninng.businesssvc.model.dto.TenantSpecification;
-import org.ninng.businesssvc.utils.RandomStringIdGenerator;
+import org.ninng.businesssvc.utils.IdUtils;
 import org.springframework.stereotype.Service;
 
 @Service

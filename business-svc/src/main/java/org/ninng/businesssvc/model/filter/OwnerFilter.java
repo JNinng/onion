@@ -9,7 +9,6 @@ import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.context.UserContextMode;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
 import org.ninng.businesssvc.identity.domain.model.TableExes;
-import org.ninng.businesssvc.identity.domain.type.DataScope;
 import org.ninng.businesssvc.model.common.OwnerAwareProps;
 import org.springframework.stereotype.Component;
 
@@ -32,13 +31,10 @@ public class OwnerFilter implements Filter<OwnerAwareProps> {
     }
 
     private void ownerFilter(FilterArgs<OwnerAwareProps> args) {
-        val roles = UserContextHolder.getRoles();
-        val allTenant = roles.stream()
-                .filter(roleDetailsView -> DataScope.ALL_TENANT.equals(roleDetailsView.getDataScope()))
-                .findFirst();
-        if (allTenant.isPresent()) {
+        if (UserContextHolder.isAllTenantRole()) {
             return;
         }
+        val roles = UserContextHolder.getRoles();
         val table = args.getTable();
         val wheres = new Predicate[roles.size()];
         int i = 0;

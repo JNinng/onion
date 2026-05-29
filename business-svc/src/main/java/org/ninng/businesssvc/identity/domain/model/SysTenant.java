@@ -3,11 +3,11 @@ package org.ninng.businesssvc.identity.domain.model;
 import org.babyfish.jimmer.sql.Entity;
 import org.babyfish.jimmer.sql.GeneratedValue;
 import org.babyfish.jimmer.sql.Id;
+import org.ninng.businesssvc.model.TenantIdGenerator;
 import org.ninng.businesssvc.model.common.CreatedAware;
 import org.ninng.businesssvc.model.common.StatusAware;
 import org.ninng.businesssvc.model.common.TenantAware;
 import org.ninng.businesssvc.model.common.UpdatedAware;
-import org.ninng.businesssvc.utils.TenantIdGenerator;
 
 @Entity
 public interface SysTenant extends CreatedAware, UpdatedAware, StatusAware, TenantAware {

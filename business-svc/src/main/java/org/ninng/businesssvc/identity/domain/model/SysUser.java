@@ -3,8 +3,8 @@ package org.ninng.businesssvc.identity.domain.model;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import org.babyfish.jimmer.sql.*;
+import org.ninng.businesssvc.model.SnowflakeIdGenerator;
 import org.ninng.businesssvc.model.common.*;
-import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 
 import java.util.List;
 

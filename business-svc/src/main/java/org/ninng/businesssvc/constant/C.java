@@ -27,7 +27,7 @@ public class C {
     public final static char[] LOWER_CASE_ID_ALPHANUMERIC = new char[]{'1', '2', '3', '4', '5', '6', '7', '8', '9',
             '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v',
             'w', 'x', 'y', 'z'};
-    public final static int TRACE_ID_LENGTH = 16;
+    public final static int TRACE_ID_LENGTH = 32;
     public final static int TENANT_ID_LENGTH = 16;
     /**
      * 租户ID 字符集（排除 0/O/1/I 等相似字符）

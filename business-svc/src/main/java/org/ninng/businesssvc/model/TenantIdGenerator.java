@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.utils;
+package org.ninng.businesssvc.model;
 
 import org.babyfish.jimmer.sql.meta.UserIdGenerator;
 

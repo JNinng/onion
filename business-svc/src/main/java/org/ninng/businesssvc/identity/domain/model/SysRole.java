@@ -7,11 +7,11 @@ import org.babyfish.jimmer.sql.Id;
 import org.babyfish.jimmer.sql.OneToMany;
 import org.ninng.businesssvc.identity.domain.type.DataScope;
 import org.ninng.businesssvc.identity.domain.type.RoleType;
+import org.ninng.businesssvc.model.SnowflakeIdGenerator;
 import org.ninng.businesssvc.model.common.CreatedAware;
 import org.ninng.businesssvc.model.common.StatusAware;
 import org.ninng.businesssvc.model.common.TenantAware;
 import org.ninng.businesssvc.model.common.UpdatedAware;
-import org.ninng.businesssvc.utils.SnowflakeIdGenerator;
 
 import java.util.List;
 

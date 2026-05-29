@@ -8,7 +8,7 @@ import org.ninng.businesssvc.identity.application.dto.TenantCreateInput;
 import org.ninng.businesssvc.identity.application.dto.TenantSpecification;
 import org.ninng.businesssvc.identity.domain.model.SysTenant;
 import org.ninng.businesssvc.identity.domain.port.TenantPort;
-import org.ninng.businesssvc.utils.RandomStringIdGenerator;
+import org.ninng.businesssvc.utils.IdUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +21,7 @@ public class TenantApplicationService {
     }
 
     public SysTenant create(Fetcher<SysTenant> fetcher, TenantCreateInput input) {
-        input.setCode(RandomStringIdGenerator.randomTenantCode());
+        input.setCode(IdUtils.generateTenantCode());
         return tenantPort.create(fetcher, input);
     }
 

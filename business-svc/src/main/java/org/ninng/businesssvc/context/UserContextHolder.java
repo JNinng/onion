@@ -1,8 +1,10 @@
 package org.ninng.businesssvc.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import lombok.val;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
 import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
+import org.ninng.businesssvc.identity.domain.type.DataScope;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -317,6 +319,24 @@ public class UserContextHolder {
      */
     public static void setRoles(List<RoleDetailsView> roles) {
         realRoles.set(roles);
+    }
+
+    /**
+     * 判断当前用户是否拥有「全租户」角色权限。
+     * <p>
+     * 全租户角色通常指可访问系统所有租户数据的特殊角色，
+     * 其数据范围标识为 {@link DataScope#ALL_TENANT}。
+     *
+     * @return true 如果存在至少一个角色的数据范围为全租户；
+     * false 如果角色列表为空、为 null，或无全租户角色
+     */
+    public static boolean isAllTenantRole() {
+        val roles = getRoles();
+        if (roles == null || roles.isEmpty()) {
+            return false;
+        }
+        return roles.stream()
+                .anyMatch(roleDetailsView -> DataScope.ALL_TENANT.equals(roleDetailsView.getDataScope()));
     }
 
     /**

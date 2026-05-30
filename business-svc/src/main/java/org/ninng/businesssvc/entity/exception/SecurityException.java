@@ -7,35 +7,15 @@ import java.io.Serial;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SecurityException extends RuntimeException {
+public class SecurityException extends BizException {
 
     @Serial
     private static final long serialVersionUID = 342686615400929388L;
 
     private String algorithm;
 
-    public SecurityException(String algorithm) {
-        this.algorithm = algorithm;
-    }
-
-    public SecurityException(String message, String algorithm) {
-        super(message);
-        this.algorithm = algorithm;
-    }
-
     public SecurityException(String message, Throwable cause, String algorithm) {
-        super(message, cause);
-        this.algorithm = algorithm;
-    }
-
-    public SecurityException(Throwable cause, String algorithm) {
-        super(cause);
-        this.algorithm = algorithm;
-    }
-
-    public SecurityException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace,
-                             String algorithm) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        super(message, ErrCode.SECURITY_EXCEPTION, cause);
         this.algorithm = algorithm;
     }
 }

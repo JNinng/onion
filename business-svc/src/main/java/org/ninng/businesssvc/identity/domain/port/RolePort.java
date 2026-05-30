@@ -3,6 +3,7 @@ package org.ninng.businesssvc.identity.domain.port;
 import org.babyfish.jimmer.Input;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
+import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.application.dto.RoleSpecification;
 import org.ninng.businesssvc.identity.application.dto.RoleUpdateInput;
@@ -16,7 +17,7 @@ public interface RolePort {
 
     Boolean update(RoleUpdateInput input);
 
-    List<Long> selectVisible();
+    long countVisible(@NonNull List<Long> changeRoleIds);
 
     Page<SysRole> select(Fetcher<SysRole> fetcher, PageReq pageReq, RoleSpecification specification);
 }

@@ -5,6 +5,7 @@ import org.babyfish.jimmer.sql.fetcher.Fetcher;
 import org.ninng.businesssvc.component.I18nUtil;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.entity.*;
+import org.ninng.businesssvc.entity.exception.ErrCode;
 import org.ninng.businesssvc.identity.application.AuthApplicationService;
 import org.ninng.businesssvc.identity.application.dto.LoginInput;
 import org.ninng.businesssvc.identity.application.dto.RegisterInput;
@@ -49,7 +50,7 @@ public class AuthController {
         try {
             return UserContextHolder.withOwnerDisabled(() -> R.ok(authApplicationService.login(loginInput)));
         } catch (BadCredentialsException e) {
-            return R.fail(i18nUtil.getMessage("auth.login.usernameOrPasswordErr"));
+            return R.err(i18nUtil.getMessage("auth.login.usernameOrPasswordErr"), ErrCode.SECURITY_EXCEPTION);
         }
     }
 

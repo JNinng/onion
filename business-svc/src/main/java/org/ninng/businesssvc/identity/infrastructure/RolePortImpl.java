@@ -7,6 +7,7 @@ import org.babyfish.jimmer.sql.ast.mutation.AssociatedSaveMode;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
+import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.application.dto.RoleSpecification;
 import org.ninng.businesssvc.identity.application.dto.RoleUpdateInput;
@@ -52,8 +53,12 @@ public class RolePortImpl extends CommonRepository<SysRole, Long> implements Rol
     }
 
     @Override
-    public List<Long> selectVisible() {
-        return List.of();
+    public long countVisible(@NonNull List<Long> roleIds) {
+        return createQuery().where(table.id()
+                        .in(roleIds))
+                .selectCount()
+                .execute()
+                .getFirst();
     }
 
     @Override

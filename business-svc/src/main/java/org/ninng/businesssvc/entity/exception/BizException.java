@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.common.domain.exception;
+package org.ninng.businesssvc.entity.exception;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +12,15 @@ public class BizException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = -9107226739965004008L;
 
-    private String code;
+    private ErrCode code;
 
     public BizException(String message, ErrCode errCode) {
         super(message);
-        this.code = errCode.getCode();
+        this.code = errCode;
+    }
+
+    public BizException(String message, ErrCode errCode, Throwable cause) {
+        super(message, cause);
+        this.code = errCode;
     }
 }

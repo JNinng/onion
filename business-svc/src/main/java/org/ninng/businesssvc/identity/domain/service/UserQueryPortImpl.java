@@ -2,10 +2,10 @@ package org.ninng.businesssvc.identity.domain.service;
 
 import lombok.val;
 import org.jspecify.annotations.NonNull;
-import org.ninng.businesssvc.common.domain.exception.UserNotFoundException;
 import org.ninng.businesssvc.common.domain.model.UserDTO;
 import org.ninng.businesssvc.common.port.UserQueryPort;
 import org.ninng.businesssvc.context.UserContextHolder;
+import org.ninng.businesssvc.entity.exception.UserNotFoundException;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
 import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
 import org.ninng.businesssvc.identity.domain.port.UserPort;

@@ -110,6 +110,33 @@ public class UserContextHolder {
     }
 
     /**
+     * 在给定快照的上下文中执行操作，执行完毕后恢复原始上下文。
+     *
+     * <p>典型场景：后台异步任务拿到调用方传入的快照后，临时恢复其身份执行查询或写入。
+     *
+     * <pre>{@code
+     * UserContextHolder.withSnapshot(new Snapshot(user.getTenantId(), user,
+     *         user.getOwnerDeptId(), roles), () -> {
+     *     // 此 lambda 内部 getTenantId()/getUser()/isShadow() 反映快照中的身份
+     * });
+     * }</pre>
+     *
+     * @param snapshot 要恢复的上下文快照
+     * @param supplier 在快照上下文中执行的业务逻辑
+     * @param <T>      返回值类型
+     * @return supplier 的返回值
+     */
+    public static <T> T withSnapshot(Snapshot snapshot, Supplier<T> supplier) {
+        Snapshot previous = snapshot();
+        restore(snapshot);
+        try {
+            return supplier.get();
+        } finally {
+            restore(previous);
+        }
+    }
+
+    /**
      * 获取当前有效的租户 ID。
      *
      * <p>返回规则：
@@ -472,6 +499,20 @@ public class UserContextHolder {
         private final UserDetailsView shadowUser;
         private final Long shadowDeptId;
         private final List<RoleDetailsView> shadowRoles;
+
+        public Snapshot(String realTenantId, UserDetailsView realUser, Long realDeptId,
+                        List<RoleDetailsView> realRoles) {
+            this.mode = UserContextMode.DefaultType.INSTANCE;
+            this.realTenantId = realTenantId;
+            this.realUser = realUser;
+            this.realDeptId = realDeptId;
+            this.realRoles = realRoles;
+            this.shadowMode = false;
+            this.shadowTenantId = null;
+            this.shadowUser = null;
+            this.shadowDeptId = null;
+            this.shadowRoles = null;
+        }
 
         private Snapshot(UserContextMode mode, String realTenantId, UserDetailsView realUser, Long realDeptId,
                          List<RoleDetailsView> realRoles, boolean shadowMode, String shadowTenantId,

@@ -1,15 +1,16 @@
-package org.ninng.businesssvc.handler;
+package org.ninng.businesssvc.common.interfaces.res;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
 import org.ninng.businesssvc.component.I18nUtil;
-import org.ninng.businesssvc.constant.HttpConstant;
 import org.ninng.businesssvc.entity.R;
+import org.ninng.businesssvc.entity.exception.BizException;
+import org.ninng.businesssvc.entity.exception.ErrCode;
+import org.ninng.businesssvc.entity.exception.PermissionsException;
 import org.ninng.businesssvc.entity.exception.ServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -18,42 +19,53 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final I18nUtil i18nUtil;
+    private final I18nUtil i18n;
 
-    public GlobalExceptionHandler(I18nUtil i18nUtil) {
-        this.i18nUtil = i18nUtil;
+    public GlobalExceptionHandler(I18nUtil i18n) {
+        this.i18n = i18n;
     }
 
     @ExceptionHandler(Exception.class)
-    public R<?> handleAllExceptions(Exception ex, WebRequest request) {
+    public R<?> handleAllExceptions(Exception ex) {
         log.error(ex.getMessage(), ex);
         if (ex.getCause() instanceof JsonParseException) {
-            return R.err(i18nUtil.getMessage("exception.jsonParseErr"));
+            return R.err(i18n.getMessage("exception.jsonParseErr"), ErrCode.JSON_PARSER_ERR);
         }
-        return R.err(i18nUtil.getMessage("exception.unknownErr"));
+        return R.err(i18n.getMessage("exception.unknownErr"), ErrCode.UNKNOW_EXCEPTION);
     }
 
     @ExceptionHandler(ServiceException.class)
-    public R<?> handleServiceException(ServiceException ex, WebRequest request) {
+    public R<?> handleServiceException(ServiceException ex) {
+        log.error(ex.getMessage(), ex);
+        return new R<>(ex.getCode(), ex.getMessage(), null, null);
+    }
+
+    @ExceptionHandler(PermissionsException.class)
+    public R<?> handlePermissionsException(PermissionsException ex) {
         log.error(ex.getMessage(), ex);
         return new R<>(ex.getCode(), ex.getMessage(), null, null);
     }
 
     @ExceptionHandler(org.ninng.businesssvc.entity.exception.SecurityException.class)
-    public R<?> handleSecurityException(org.ninng.businesssvc.entity.exception.SecurityException ex,
-                                        WebRequest request) {
+    public R<?> handleSecurityException(org.ninng.businesssvc.entity.exception.SecurityException ex) {
         log.error(ex.getMessage(), ex);
         R<Void> r = new R<>();
-        r.setCode(HttpConstant.ERROR);
+        r.setCode(ErrCode.SECURITY_EXCEPTION.getCode());
         r.setAlgorithm(ex.getAlgorithm());
         r.setMsg(ex.getMessage());
         return r;
     }
 
-    @ExceptionHandler(SQLException.class)
-    public R<?> handleSQLException(SQLException ex, WebRequest request) {
+    @ExceptionHandler(BizException.class)
+    public R<?> handleBizException(BizException ex) {
         log.error(ex.getMessage(), ex);
-        return R.err(ex.getMessage());
+        return new R<>(ex.getCode(), ex.getMessage(), null, null);
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public R<?> handleSQLException(SQLException ex) {
+        log.error(ex.getMessage(), ex);
+        return R.err(ex.getMessage(), ErrCode.DB_EXCEPTION);
     }
 
     /**
@@ -68,6 +80,6 @@ public class GlobalExceptionHandler {
         String field = Objects.requireNonNull(ex.getBindingResult()
                         .getFieldError())
                 .getField();
-        return R.err(field + ": " + message);
+        return R.err(field + ": " + message, ErrCode.PARAMETER_EXCEPTION);
     }
 }

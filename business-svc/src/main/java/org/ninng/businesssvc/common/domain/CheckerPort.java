@@ -2,15 +2,13 @@ package org.ninng.businesssvc.common.domain;
 
 import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.common.domain.model.UserDTO;
-import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
-import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
+import org.ninng.businesssvc.entity.exception.PermissionsException;
 
 import java.util.List;
 
 public interface CheckerPort {
 
-    boolean checkOwnerUser(@NonNull List<Long> changeRoleIds, UserDTO user);
+    void checkOwnerUser(@NonNull List<Long> changeRoleIds) throws PermissionsException;
 
-    boolean checkOwnerUser(@NonNull List<Long> changeRoleIds, UserDetailsView user,
-                           @NonNull List<RoleDetailsView> roles);
+    void checkOwnerUser(@NonNull List<Long> changeRoleIds, @NonNull UserDTO userDTO) throws PermissionsException;
 }

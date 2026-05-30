@@ -10,12 +10,12 @@ import java.io.Serial;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class PermissionsException extends RuntimeException {
+public class PermissionsException extends BizException {
 
     @Serial
     private static final long serialVersionUID = 6656335940441684110L;
 
     public PermissionsException(String message) {
-        super(message);
+        super(message, ErrCode.NOT_PERMISSION);
     }
 }

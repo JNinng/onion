@@ -35,7 +35,7 @@ public class TenantDraftInterceptor implements DraftInterceptor<TenantAware, Ten
         if (original == null) {
             draft.setTenantId(UserContextHolder.getTenantId());
         } else if (!Objects.equals(UserContextHolder.getTenantId(), original.tenantId())) {
-            throw new ServiceException(i18nUtil.getMessage("exception.permissionErr"), 500);
+            throw new ServiceException(i18nUtil.getMessage("exception.permissionErr"));
         }
     }
 
@@ -47,7 +47,7 @@ public class TenantDraftInterceptor implements DraftInterceptor<TenantAware, Ten
                         .setTenantId(UserContextHolder.getTenantId());
             } else if (!Objects.equals(UserContextHolder.getTenantId(), item.getOriginal()
                     .tenantId())) {
-                throw new ServiceException(i18nUtil.getMessage("exception.permissionErr"), 500);
+                throw new ServiceException(i18nUtil.getMessage("exception.permissionErr"));
             }
         }
     }

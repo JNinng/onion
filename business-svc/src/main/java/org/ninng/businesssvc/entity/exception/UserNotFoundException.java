@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.common.domain.exception;
+package org.ninng.businesssvc.entity.exception;
 
 import java.io.Serial;
 

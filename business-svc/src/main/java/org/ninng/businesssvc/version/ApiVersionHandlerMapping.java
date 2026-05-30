@@ -27,8 +27,7 @@ public class ApiVersionHandlerMapping extends RequestMappingHandlerMapping {
     protected RequestCondition<?> getCustomTypeCondition(@NonNull Class<?> handlerType) {
         ApiVersion annotation = AnnotationUtils.findAnnotation(handlerType, ApiVersion.class);
         if (annotation != null) {
-            return new ApiVersionRequestCondition(
-                    annotation.value(), annotation.deprecated(), annotation.sunset());
+            return new ApiVersionRequestCondition(annotation.value(), annotation.deprecated(), annotation.sunset());
         }
         return null;
     }
@@ -37,8 +36,7 @@ public class ApiVersionHandlerMapping extends RequestMappingHandlerMapping {
     protected RequestCondition<?> getCustomMethodCondition(@NonNull Method method) {
         ApiVersion annotation = AnnotationUtils.findAnnotation(method, ApiVersion.class);
         if (annotation != null) {
-            return new ApiVersionRequestCondition(
-                    annotation.value(), annotation.deprecated(), annotation.sunset());
+            return new ApiVersionRequestCondition(annotation.value(), annotation.deprecated(), annotation.sunset());
         }
         return null;
     }
@@ -53,10 +51,8 @@ public class ApiVersionHandlerMapping extends RequestMappingHandlerMapping {
         if (handler == null) {
             String version = request.getHeader(HttpConstant.API_VERSION);
             if (version != null && !version.isBlank()) {
-                throw new ServiceException(
-                        SpringContextHolder.getBean(org.ninng.businesssvc.component.I18nUtil.class)
-                                .getMessage("exception.apiVersionNotFound", new Object[]{version}),
-                        HttpConstant.ERROR);
+                throw new ServiceException(SpringContextHolder.getBean(org.ninng.businesssvc.component.I18nUtil.class)
+                        .getMessage("exception.apiVersionNotFound", new Object[]{version}));
             }
         }
         return handler;

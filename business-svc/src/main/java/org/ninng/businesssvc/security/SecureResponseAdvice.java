@@ -7,6 +7,7 @@ import org.ninng.businesssvc.component.I18nUtil;
 import org.ninng.businesssvc.config.SecurityParamConfig;
 import org.ninng.businesssvc.context.SecurityContextHolder;
 import org.ninng.businesssvc.entity.R;
+import org.ninng.businesssvc.entity.exception.ErrCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -86,7 +87,7 @@ public class SecureResponseAdvice implements ResponseBodyAdvice<Object> {
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return R.fail(i18nUtil.getMessage("security.responseErr"));
+            return R.fail(i18nUtil.getMessage("security.responseErr"), ErrCode.SECURITY_EXCEPTION);
         }
     }
 

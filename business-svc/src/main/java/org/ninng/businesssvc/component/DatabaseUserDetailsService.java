@@ -1,9 +1,9 @@
 package org.ninng.businesssvc.component;
 
-import org.ninng.businesssvc.common.domain.exception.UserNotFoundException;
 import org.ninng.businesssvc.common.port.UserQueryPort;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.entity.exception.ServiceException;
+import org.ninng.businesssvc.entity.exception.UserNotFoundException;
 import org.ninng.businesssvc.identity.application.dto.RoleDetailsView;
 import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

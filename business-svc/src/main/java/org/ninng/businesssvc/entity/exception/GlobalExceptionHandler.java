@@ -1,13 +1,9 @@
-package org.ninng.businesssvc.common.interfaces.res;
+package org.ninng.businesssvc.entity.exception;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
 import org.ninng.businesssvc.component.I18nUtil;
 import org.ninng.businesssvc.entity.R;
-import org.ninng.businesssvc.entity.exception.BizException;
-import org.ninng.businesssvc.entity.exception.ErrCode;
-import org.ninng.businesssvc.entity.exception.PermissionsException;
-import org.ninng.businesssvc.entity.exception.ServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

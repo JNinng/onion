@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.common.domain;
+package org.ninng.businesssvc.common.domain.port;
 
 import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.common.domain.model.UserDTO;

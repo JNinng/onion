@@ -1,4 +1,4 @@
-package org.ninng.businesssvc.entity;
+package org.ninng.businesssvc.cache;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

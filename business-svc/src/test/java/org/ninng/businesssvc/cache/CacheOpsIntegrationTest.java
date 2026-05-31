@@ -3,7 +3,6 @@ package org.ninng.businesssvc.cache;
 import org.junit.jupiter.api.*;
 import org.ninng.businesssvc.cache.ops.CacheOps;
 import org.ninng.businesssvc.cache.strategy.RefreshStrategy;
-import org.ninng.businesssvc.entity.GlobalListItem;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.options.KeysScanOptions;
 import org.springframework.beans.factory.annotation.Autowired;

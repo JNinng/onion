@@ -1,6 +1,6 @@
 package org.ninng.businesssvc.component;
 
-import org.ninng.businesssvc.common.port.UserQueryPort;
+import org.ninng.businesssvc.common.domain.port.UserQueryPort;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.entity.exception.ServiceException;
 import org.ninng.businesssvc.entity.exception.UserNotFoundException;

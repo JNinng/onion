@@ -1,8 +1,8 @@
 package org.ninng.businesssvc.cache.loader;
 
 import org.ninng.businesssvc.cache.CacheTestConfig;
+import org.ninng.businesssvc.cache.GlobalListItem;
 import org.ninng.businesssvc.cache.domain.CacheKey;
-import org.ninng.businesssvc.entity.GlobalListItem;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 

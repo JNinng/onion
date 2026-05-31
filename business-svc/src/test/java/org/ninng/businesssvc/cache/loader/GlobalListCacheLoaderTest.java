@@ -2,8 +2,8 @@ package org.ninng.businesssvc.cache.loader;
 
 import org.junit.jupiter.api.Test;
 import org.ninng.businesssvc.cache.CacheTestConfig;
+import org.ninng.businesssvc.cache.GlobalListItem;
 import org.ninng.businesssvc.cache.domain.CacheKey;
-import org.ninng.businesssvc.entity.GlobalListItem;
 
 import java.util.Map;
 import java.util.Set;

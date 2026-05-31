@@ -52,7 +52,8 @@ class CollectionDiffUtilsTest {
         assertThat(result.del()).containsExactlyInAnyOrder("A");
 
         // 验证结果不可变
-        assertThatThrownBy(() -> result.add().add("X"))
+        assertThatThrownBy(() -> result.add()
+                .add("X"))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 
@@ -73,9 +74,11 @@ class CollectionDiffUtilsTest {
         // ID=2 被删除
         // ID=3 被新增
         assertThat(result.add()).hasSize(1)
-                .allMatch(u -> u.id().equals(3));
+                .allMatch(u -> u.id()
+                        .equals(3));
         assertThat(result.del()).hasSize(1)
-                .allMatch(u -> u.id().equals(2));
+                .allMatch(u -> u.id()
+                        .equals(2));
     }
 
     @Test
@@ -125,10 +128,12 @@ class CollectionDiffUtilsTest {
     void testDiffResult_Immutability() {
         var result = CollectionDiffUtils.diff(List.of("A"), List.of("B"));
 
-        assertThatThrownBy(() -> result.add().add("X"))
+        assertThatThrownBy(() -> result.add()
+                .add("X"))
                 .isInstanceOf(UnsupportedOperationException.class);
 
-        assertThatThrownBy(() -> result.del().add("Y"))
+        assertThatThrownBy(() -> result.del()
+                .add("Y"))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 

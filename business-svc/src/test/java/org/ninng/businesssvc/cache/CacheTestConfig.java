@@ -3,7 +3,6 @@ package org.ninng.businesssvc.cache;
 import org.ninng.businesssvc.cache.domain.CacheDomain;
 import org.ninng.businesssvc.cache.domain.CacheType;
 import org.ninng.businesssvc.cache.domain.KeySpec;
-import org.ninng.businesssvc.entity.GlobalListItem;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

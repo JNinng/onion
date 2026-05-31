@@ -15,7 +15,6 @@ import org.ninng.businesssvc.identity.domain.model.SysRole;
 import org.ninng.businesssvc.identity.domain.model.SysRoleProps;
 import org.ninng.businesssvc.identity.domain.model.SysRoleTable;
 import org.ninng.businesssvc.identity.domain.port.RolePort;
-import org.ninng.businesssvc.model.filter.CommandDataScopeFilter;
 import org.ninng.businesssvc.repository.CommonRepository;
 import org.springframework.stereotype.Repository;
 
@@ -46,7 +45,6 @@ public class RolePortImpl extends CommonRepository<SysRole, Long> implements Rol
     @Override
     public Boolean update(RoleUpdateInput input) {
         return sql.saveCommand(input)
-                .setOptimisticLock(SysRoleTable.class, new CommandDataScopeFilter<>())
                 .setAssociatedMode(SysRoleProps.ROLE_ID_SCOPES, AssociatedSaveMode.APPEND)
                 .execute()
                 .isModified();

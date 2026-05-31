@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.View;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
+import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
 import org.ninng.businesssvc.identity.application.dto.UserSpecification;
@@ -28,4 +29,6 @@ public interface UserPort {
     List<SysUser> select(Fetcher<SysUser> fetcher);
 
     Page<SysUser> select(Fetcher<SysUser> fetcher, PageReq pageReq, UserSpecification specification);
+
+    long countVisible(@NonNull List<Long> userIds);
 }

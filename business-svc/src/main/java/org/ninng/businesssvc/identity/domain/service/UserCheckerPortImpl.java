@@ -4,47 +4,47 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.common.domain.model.UserDTO;
-import org.ninng.businesssvc.common.domain.port.RoleCheckerPort;
+import org.ninng.businesssvc.common.domain.port.UserCheckerPort;
 import org.ninng.businesssvc.component.I18nUtil;
 import org.ninng.businesssvc.context.UserContextHolder;
 import org.ninng.businesssvc.entity.exception.PermissionsException;
-import org.ninng.businesssvc.identity.domain.port.RolePort;
+import org.ninng.businesssvc.identity.domain.port.UserPort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @Slf4j
-public class RoleCheckerPortImpl implements RoleCheckerPort {
+@Service
+public class UserCheckerPortImpl implements UserCheckerPort {
 
     private final I18nUtil i18n;
-    private final RolePort rolePort;
+    private final UserPort userPort;
 
-    public RoleCheckerPortImpl(I18nUtil i18n, RolePort rolePort) {
+    public UserCheckerPortImpl(I18nUtil i18n, UserPort userPort) {
         this.i18n = i18n;
-        this.rolePort = rolePort;
+        this.userPort = userPort;
     }
 
     @Override
-    public void checkVisible(@NonNull Long roleId) throws PermissionsException {
-        checkVisible(List.of(roleId));
+    public void checkVisible(@NonNull Long userId) throws PermissionsException {
+        checkVisible(List.of(userId));
     }
 
     @Override
-    public void checkVisible(@NonNull List<Long> roleIds) throws PermissionsException {
-        if (!checkOwnerUserHandler(roleIds)) {
+    public void checkVisible(@NonNull List<Long> userIds) throws PermissionsException {
+        if (!checkerVisibleHandle(userIds)) {
             throw new PermissionsException(i18n.getMessage("exception.notDataPermissions"));
         }
     }
 
     @Override
-    public void checkVisible(@NonNull List<Long> roleIds,
-                             @NonNull UserDTO userDTO) throws PermissionsException {
+    public void checkVisible(@NonNull List<Long> userIds, @NonNull UserDTO userDTO) throws PermissionsException {
         val user = userDTO.getUserDetails();
         try {
             val allow = UserContextHolder.withSnapshot(
                     new UserContextHolder.Snapshot(user.getTenantId(), user, user.getOwnerDeptId(), userDTO.getRoles()),
-                    () -> checkOwnerUserHandler(roleIds));
+                    () -> checkerVisibleHandle(userIds)
+            );
             if (!allow) {
                 throw new PermissionsException(i18n.getMessage("exception.notDataPermissions"));
             }
@@ -54,10 +54,10 @@ public class RoleCheckerPortImpl implements RoleCheckerPort {
         }
     }
 
-    boolean checkOwnerUserHandler(@NonNull List<Long> changeRoleIds) {
-        if (changeRoleIds.isEmpty()) {
+    boolean checkerVisibleHandle(@NonNull List<Long> changeUserIds) throws PermissionsException {
+        if (changeUserIds.isEmpty()) {
             return false;
         }
-        return rolePort.countVisible(changeRoleIds) == changeRoleIds.size();
+        return userPort.countVisible(changeUserIds) == changeUserIds.size();
     }
 }

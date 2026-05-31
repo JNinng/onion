@@ -40,9 +40,7 @@ input UserUpdateInput {
 
     dynamic nickname?
 
-    dynamic roles? {
-        id
-    }
+    id(roles) as roleIds
 }
 
 input LoginInput {

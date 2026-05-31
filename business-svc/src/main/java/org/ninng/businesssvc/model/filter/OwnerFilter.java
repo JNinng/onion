@@ -31,7 +31,7 @@ public class OwnerFilter implements Filter<OwnerAwareProps> {
     }
 
     private void ownerFilter(FilterArgs<OwnerAwareProps> args) {
-        if (UserContextHolder.isAllTenantRole()) {
+        if (UserContextHolder.isAllTenantRole() || UserContextHolder.getMode() instanceof UserContextMode.DisabledType) {
             return;
         }
         val roles = UserContextHolder.getRoles();

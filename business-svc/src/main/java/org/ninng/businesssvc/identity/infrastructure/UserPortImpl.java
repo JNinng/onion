@@ -7,6 +7,7 @@ import org.babyfish.jimmer.View;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.table.spi.AbstractTypedTable;
 import org.babyfish.jimmer.sql.fetcher.Fetcher;
+import org.jspecify.annotations.NonNull;
 import org.ninng.businesssvc.entity.PageReq;
 import org.ninng.businesssvc.identity.application.dto.UserDetailsView;
 import org.ninng.businesssvc.identity.application.dto.UserSpecification;
@@ -58,8 +59,7 @@ public class UserPortImpl extends CommonRepository<SysUser, Long> implements Use
 
     @Override
     public SysUser register(Input<SysUser> input) {
-        return saveCommand(input)
-                .setMode(org.babyfish.jimmer.sql.ast.mutation.SaveMode.INSERT_ONLY)
+        return saveCommand(input).setMode(org.babyfish.jimmer.sql.ast.mutation.SaveMode.INSERT_ONLY)
                 .execute()
                 .getModifiedEntity();
     }
@@ -86,5 +86,14 @@ public class UserPortImpl extends CommonRepository<SysUser, Long> implements Use
     @Override
     public Page<SysUser> select(Fetcher<SysUser> fetcher, PageReq pageReq, UserSpecification specification) {
         return super.select(fetcher, pageReq, specification);
+    }
+
+    @Override
+    public long countVisible(@NonNull List<Long> userIds) {
+        return createQuery().where(table.id()
+                        .in(userIds))
+                .selectCount()
+                .execute()
+                .getFirst();
     }
 }

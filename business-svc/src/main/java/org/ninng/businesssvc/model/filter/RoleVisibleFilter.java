@@ -35,7 +35,7 @@ public class RoleVisibleFilter implements Filter<SysRoleProps> {
     }
 
     private void roleVisibleFilter(FilterArgs<SysRoleProps> args) {
-        if (UserContextHolder.isAllTenantRole()) {
+        if (UserContextHolder.isAllTenantRole() || UserContextHolder.getMode() instanceof UserContextMode.DisabledType) {
             return;
         }
         val roles = UserContextHolder.getRoles();

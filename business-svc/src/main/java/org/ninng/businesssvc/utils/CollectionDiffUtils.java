@@ -6,6 +6,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 集合差异比对工具类。
@@ -65,8 +66,7 @@ public class CollectionDiffUtils {
      * @return {@link DiffResult} 包含新增和删除的元素列表
      */
     @NonNull
-    public static <T, K> DiffResult<T> diff(@Nullable Collection<T> oldList,
-                                            @Nullable Collection<T> newList,
+    public static <T, K> DiffResult<T> diff(@Nullable Collection<T> oldList, @Nullable Collection<T> newList,
                                             @NonNull Function<? super T, ? extends K> keyExtractor) {
         var safeOld = Objects.requireNonNullElse(oldList, List.<T>of());
         var safeNew = Objects.requireNonNullElse(newList, List.<T>of());
@@ -102,8 +102,7 @@ public class CollectionDiffUtils {
      * @return {@link DiffResult} 包含新增和删除的元素列表
      */
     @NonNull
-    public static <T> DiffResult<T> diff(@Nullable Collection<T> oldList,
-                                         @Nullable Collection<T> newList,
+    public static <T> DiffResult<T> diff(@Nullable Collection<T> oldList, @Nullable Collection<T> newList,
                                          @NonNull Comparator<? super T> comparator) {
         var safeOld = Objects.requireNonNullElse(oldList, List.<T>of());
         var safeNew = Objects.requireNonNullElse(newList, List.<T>of());
@@ -142,6 +141,11 @@ public class CollectionDiffUtils {
         public DiffResult {
             add = add == null ? List.of() : List.copyOf(add);
             del = del == null ? List.of() : List.copyOf(del);
+        }
+
+        public List<T> changed() {
+            return Stream.concat(add.stream(), del.stream())
+                    .toList();
         }
     }
 }

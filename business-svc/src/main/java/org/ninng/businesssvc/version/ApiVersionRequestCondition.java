@@ -117,7 +117,7 @@ public class ApiVersionRequestCondition implements RequestCondition<ApiVersionRe
     }
 
     /**
-     * 优先级：固定版本 &gt; 范围版本，高版本 &gt; 低版本。
+     * 优先级：固定版本 > 范围版本，高版本 > 低版本。
      */
     @Override
     public int compareTo(ApiVersionRequestCondition other, @NonNull HttpServletRequest request) {

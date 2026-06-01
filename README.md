@@ -126,13 +126,16 @@ interfaces/rest  ──►  application  ──►  domain/port（接口）
 ### 请求管线
 
 ```
-Request → Filter 链（TraceId → SecurityContext → UserContext）
+Request → MainOnceFilterHandler（ContentCachingRequestWrapper 包裹请求体缓存）
+        → RequestIdOnceFilterHandler（TraceId 注入 MDC）
+        → SecurityContextOnceFilterHandler → UserContextOnceFilterHandler
         → AuthenticationFilter（JWT 校验 + 租户 ID 提取）
         → SecureRequestAdvice（请求解密）
         → ApiVersionInterceptor（API 版本路由）
         → Controller → ApplicationService → Port → PortImpl
         → SecureResponseAdvice（响应加密）
-        → GlobalExceptionHandler
+        → GlobalExceptionHandler（统一日志 + 响应封装，异常时可读取缓存的请求体）
+        → UserContextOnceFilterHandler.after()（清理 ThreadLocal）
 ```
 
 ### 多租户
@@ -249,7 +252,9 @@ cacheEventPublisher.batch()
 - **异常层次：** `BizException` → `ServiceException | PermissionsException | SecurityException`
 - **错误码：** `ErrCode` 枚举定义统一错误码
 - **响应体：** `R<T>` 包装 `(code, msg, data, algorithm, traceId)`
-- **全局处理：** `GlobalExceptionHandler`（`@RestControllerAdvice`）
+- **全局处理：** `GlobalExceptionHandler`（`@RestControllerAdvice`）统一 `log.error` 级别输出完整异常栈
+- **日志上下文：** 每条异常日志包含 `traceId`、`uri`、`method`、`tenantId`、`userId`、请求参数（query/form）、请求体（`ContentCachingRequestWrapper` 缓存，截断 2000 字符，换行展平）
+- **敏感参数脱敏：** `password`、`secret`、`token` 等参数值自动替换为 `***`
 
 ## 通用工具
 

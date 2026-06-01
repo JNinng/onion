@@ -107,7 +107,7 @@ Request → MainOnceFilterHandler → RequestIdOnceFilterHandler
         → UserContextOnceFilterHandler.after() (cleanup ThreadLocal)
 ```
 
-`MainOnceFilterHandler` collects all `OnceFilterHandler` beans, executing `before()` → filter chain → finally `after()` in order.
+`MainOnceFilterHandler` collects all `OnceFilterHandler` beans, executing `before()` → filter chain → finally `after()` in order. It wraps the request with `ContentCachingRequestWrapper` so the request body remains accessible in `GlobalExceptionHandler` for error logging.
 
 ### Multi-tenancy & user context
 
@@ -224,7 +224,11 @@ cacheOps.refresh(domain, tid, RefreshStrategy.fixed(pageSize));
 
 - `BizException` (base) → `ServiceException` | `PermissionsException` | `SecurityException`
 - `ErrCode` enum defines error codes, `R<T>` wraps `(code, msg, data, algorithm, traceId)`
-- `GlobalExceptionHandler` (`@RestControllerAdvice`) catches all exceptions
+- `GlobalExceptionHandler` (`@RestControllerAdvice`) catches all exceptions at `log.error` level with full stack trace
+- All exception logs include unified request context: `traceId`, `uri`, `method`, `tenantId`, `userId`
+- Query/form parameters are logged via `request.getParameterMap()`, sensitive fields (`password`, `secret`, `token`, etc.) auto-masked
+- Request body is captured by `ContentCachingRequestWrapper` in `MainOnceFilterHandler` and logged (truncated at 2000 chars, newlines flattened to spaces)
+- `R.err()` includes `traceId` automatically; `R.err(msg, code, algorithm)` overload for `SecurityException`
 
 ## Git / Commit Convention
 

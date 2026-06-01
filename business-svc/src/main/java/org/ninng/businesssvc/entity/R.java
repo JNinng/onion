@@ -45,4 +45,8 @@ public class R<T> implements Serializable {
     public static <T> R<T> err(String msg, ErrCode code) {
         return new R<>(code.getCode(), msg, null, null, LinkContextHolder.getTraceId());
     }
+
+    public static <T> R<T> err(String msg, ErrCode code, String algorithm) {
+        return new R<>(code.getCode(), msg, null, algorithm, LinkContextHolder.getTraceId());
+    }
 }

@@ -273,11 +273,8 @@ ON COLUMN public.sys_user.remark IS '备注';
 
 CREATE TABLE public.user_role_mapping
 (
-    user_id    int8         NOT NULL, -- 用户 ID
-    role_id    int8         NOT NULL, -- 角色 ID
-    deleted_at timestamp(0) NULL,     -- 删除时间
-    updated_by int8         NOT NULL, -- 更新人
-    updated_at timestamp(0) NOT NULL  -- 更新时间
+    user_id int8 NOT NULL, -- 用户 ID
+    role_id int8 NOT NULL, -- 角色 ID
 );
 
 -- Column comments
@@ -286,12 +283,6 @@ COMMENT
 ON COLUMN public.user_role_mapping.user_id IS '用户 ID';
 COMMENT
 ON COLUMN public.user_role_mapping.role_id IS '角色 ID';
-COMMENT
-ON COLUMN public.user_role_mapping.deleted_at IS '删除时间';
-COMMENT
-ON COLUMN public.user_role_mapping.updated_by IS '更新人';
-COMMENT
-ON COLUMN public.user_role_mapping.updated_at IS '更新时间';
 
 -- public.sys_role_id_scope definition
 
